@@ -443,18 +443,128 @@
       font-size: 0.875rem; font-weight: 500;
     }
 
-    /* ElevenLabs widget container */
-    .elevenlabs-container {
-      background: var(--white);
-      border: 2px solid var(--clouds);
-      border-radius: 12px;
-      min-height: 420px;
-      margin-bottom: 2rem;
-      position: relative;
-      overflow: hidden;
+    /* Wizard stepper */
+    .wizard-progress {
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 0.25rem;
+      margin-bottom: 2rem;
+    }
+    .step-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--clouds);
+      transition: background 0.3s, transform 0.3s;
+    }
+    .step-dot.active { background: var(--dark-blue); transform: scale(1.3); }
+    .step-dot.done { background: var(--leaf); }
+    .step-line {
+      width: 28px; height: 2px;
+      background: var(--clouds);
+      transition: background 0.3s;
+    }
+    .step-line.done { background: var(--leaf); }
+
+    .wizard-step {
+      display: none;
+      animation: wizardIn 0.25s ease;
+    }
+    .wizard-step.active { display: block; }
+    @keyframes wizardIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .step-counter {
+      font-size: 0.8125rem;
+      color: var(--dark-gray);
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+    .wizard-question {
+      font-size: 1.25rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 0.375rem;
+    }
+    .wizard-sub {
+      font-size: 0.9375rem;
+      color: var(--dark-gray);
+      text-align: center;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+
+    .option-tiles {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+    @media (max-width: 400px) {
+      .option-tiles { grid-template-columns: 1fr; }
+    }
+    .option-tile {
+      background: var(--white);
+      border: 2px solid var(--clouds);
+      border-radius: 10px;
+      padding: 1.25rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--dark-blue);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .option-tile:hover {
+      border-color: var(--dark-blue);
+      box-shadow: 0 2px 8px rgba(0,44,74,0.08);
+    }
+    .option-tile.selected {
+      border-color: var(--dark-blue);
+      background: var(--mint);
+    }
+    .option-tile .tile-icon svg {
+      width: 32px; height: 32px;
+      stroke: var(--dark-blue);
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .wizard-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.5rem;
+    }
+    .wizard-nav .btn-wizard-back {
+      background: none;
+      border: none;
+      color: var(--rain);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 0.5rem 0;
+    }
+    .wizard-nav .btn-wizard-back:hover { text-decoration: underline; }
+
+    /* ElevenLabs widget container */
+    .elevenlabs-container {
+      position: relative;
+      min-height: 260px;
+      margin-bottom: 2rem;
+    }
+    .elevenlabs-container elevenlabs-convai {
+      position: absolute;
+      inset: 0;
     }
 
     .divider {
@@ -668,55 +778,172 @@
     </a>
   </header>
 
-  <div class="inner-page">
-    <div class="page-heading">
-      <h1 style="font-size:1.75rem;">Ihr individuelles Finanzierungsangebot</h1>
-      <p>Beantworten Sie ein paar Fragen — wir erstellen Ihnen ein unverbindliches Angebot. Als Bonus erhalten Sie Ihr persönliches Immobilien-Portal per E-Mail.</p>
-    </div>
+  <div class="inner-page" style="max-width:480px;">
 
-    <div class="form-card" style="margin-top:1.5rem;">
-      <div class="form-group">
-        <label>Was möchten Sie finanzieren?</label>
-        <div class="select-wrapper">
-          <select>
-            <option value="" disabled selected>Bitte wählen</option>
-            <option value="purchase">Immobilienkauf</option>
-            <option value="refinancing">Anschlussfinanzierung</option>
-            <option value="renovation">Modernisierung</option>
-            <option value="general">Allgemeine Beratung</option>
-          </select>
+    <!-- Progress dots -->
+    <div class="wizard-progress" id="wizard-progress"></div>
+
+    <!-- STEP 1: Finanzierungsvorhaben -->
+    <div class="wizard-step active" data-step="0">
+      <p class="step-counter">Schritt 1 von 6</p>
+      <h2 class="wizard-question">Was möchten Sie finanzieren?</h2>
+      <p class="wizard-sub">Wählen Sie Ihr Vorhaben — alle Optionen sind kostenlos und unverbindlich.</p>
+      <div class="option-tiles">
+        <div class="option-tile" onclick="wizardSelect(this, 0)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+          Immobilienkauf
+        </div>
+        <div class="option-tile" onclick="wizardSelect(this, 0)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M21 12V7H5a2 2 0 010-4h14v4"/><path d="M3 5v14a2 2 0 002 2h16v-5"/><path d="M18 12a2 2 0 000 4h4v-4z"/></svg></div>
+          Anschluss&shy;finanzierung
+        </div>
+        <div class="option-tile" onclick="wizardSelect(this, 0)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div>
+          Modernisierung
+        </div>
+        <div class="option-tile" onclick="wizardSelect(this, 0)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
+          Neubau
         </div>
       </div>
-      <div class="form-group">
-        <label>Kaufpreis / Immobilienwert <span class="optional">(ca.)</span></label>
-        <input type="text" placeholder="z.B. 450.000 €">
+      <div class="wizard-nav">
+        <button class="btn-wizard-back" onclick="goToPage('choose-path')">← Zurück</button>
+        <span></span>
       </div>
-      <div class="form-group">
-        <label>Eigenkapital <span class="optional">(ca.)</span></label>
-        <input type="text" placeholder="z.B. 80.000 €">
-      </div>
-
-      <hr class="divider" style="margin:1.25rem 0;">
-
-      <div class="form-group">
-        <label>Vor- und Nachname</label>
-        <input type="text" placeholder="Max Mustermann">
-      </div>
-      <div class="form-group">
-        <label>E-Mail-Adresse</label>
-        <input type="email" placeholder="max@beispiel.de">
-      </div>
-      <div class="form-group">
-        <label>Telefonnummer <span class="optional">(optional)</span></label>
-        <input type="tel" placeholder="+49 170 1234567">
-      </div>
-      <div class="dsgvo-notice">
-        Ihre Daten werden gemäß der Datenschutzgrundverordnung (DSGVO) verarbeitet und nicht an Dritte verkauft. Sie dienen ausschließlich dazu, Ihnen bestmöglich weiterzuhelfen. Weitere Informationen finden Sie in unserer <a href="#">Datenschutzerklärung</a>.
-      </div>
-      <button class="btn-primary" onclick="goToPage('callback-confirmed-self')">Angebot anfordern →</button>
     </div>
-    <div class="back-link">
-      <button class="ghost-link" onclick="goToPage('choose-path')">← Zurück zur Auswahl</button>
+
+    <!-- STEP 2: Immobilienart -->
+    <div class="wizard-step" data-step="1">
+      <p class="step-counter">Schritt 2 von 6</p>
+      <h2 class="wizard-question">Um welche Immobilienart handelt es sich?</h2>
+      <p class="wizard-sub">Wählen Sie den Typ der Immobilie aus.</p>
+      <div class="option-tiles">
+        <div class="option-tile" onclick="wizardSelect(this, 1)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="9" y1="6" x2="9" y2="6.01"/><line x1="15" y1="6" x2="15" y2="6.01"/><line x1="9" y1="10" x2="9" y2="10.01"/><line x1="15" y1="10" x2="15" y2="10.01"/><line x1="9" y1="14" x2="9" y2="14.01"/><line x1="15" y1="14" x2="15" y2="14.01"/><path d="M9 22v-4h6v4"/></svg></div>
+          Eigentums&shy;wohnung
+        </div>
+        <div class="option-tile" onclick="wizardSelect(this, 1)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+          Einfamilienhaus
+        </div>
+        <div class="option-tile" onclick="wizardSelect(this, 1)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><rect x="1" y="6" width="22" height="16" rx="2"/><path d="M1 10h22"/><path d="M8 6v16"/><path d="M16 6v16"/><path d="M1 6l11-4 11 4"/></svg></div>
+          Mehrfamilienhaus
+        </div>
+        <div class="option-tile" onclick="wizardSelect(this, 1)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg></div>
+          Grundstück
+        </div>
+      </div>
+      <div class="wizard-nav">
+        <button class="btn-wizard-back" onclick="wizardBack()">← Zurück</button>
+        <span></span>
+      </div>
+    </div>
+
+    <!-- STEP 3: Nutzung -->
+    <div class="wizard-step" data-step="2">
+      <p class="step-counter">Schritt 3 von 6</p>
+      <h2 class="wizard-question">Wie wird die Immobilie genutzt?</h2>
+      <p class="wizard-sub">Dies beeinflusst die Finanzierungsbedingungen.</p>
+      <div class="option-tiles" style="grid-template-columns: repeat(3, 1fr);">
+        <div class="option-tile" onclick="wizardSelect(this, 2)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          Eigennutzung
+        </div>
+        <div class="option-tile" onclick="wizardSelect(this, 2)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+          Kapitalanlage
+        </div>
+        <div class="option-tile" onclick="wizardSelect(this, 2)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
+          Teilweise vermietet
+        </div>
+      </div>
+      <div class="wizard-nav">
+        <button class="btn-wizard-back" onclick="wizardBack()">← Zurück</button>
+        <span></span>
+      </div>
+    </div>
+
+    <!-- STEP 4: Kaufpreis -->
+    <div class="wizard-step" data-step="3">
+      <p class="step-counter">Schritt 4 von 6</p>
+      <h2 class="wizard-question">Wie hoch ist der Kaufpreis?</h2>
+      <p class="wizard-sub">Ein ungefährer Wert genügt — wir helfen Ihnen bei der genauen Berechnung.</p>
+      <div class="form-card">
+        <div class="form-group">
+          <label>Kaufpreis / Immobilienwert</label>
+          <input type="text" id="wiz-price" placeholder="z.B. 450.000 €" inputmode="numeric">
+        </div>
+        <div class="form-group">
+          <label>Eigenkapital <span class="optional">(ca.)</span></label>
+          <input type="text" id="wiz-equity" placeholder="z.B. 80.000 €" inputmode="numeric">
+        </div>
+        <button class="btn-primary" onclick="wizardNext(3)">Weiter →</button>
+      </div>
+      <div class="wizard-nav">
+        <button class="btn-wizard-back" onclick="wizardBack()">← Zurück</button>
+        <span></span>
+      </div>
+    </div>
+
+    <!-- STEP 5: Wann benötigen Sie die Finanzierung? -->
+    <div class="wizard-step" data-step="4">
+      <p class="step-counter">Schritt 5 von 6</p>
+      <h2 class="wizard-question">Wann benötigen Sie die Finanzierung?</h2>
+      <p class="wizard-sub">So können wir die Dringlichkeit besser einschätzen.</p>
+      <div class="option-tiles">
+        <div class="option-tile" onclick="wizardSelect(this, 4)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          So schnell wie möglich
+        </div>
+        <div class="option-tile" onclick="wizardSelect(this, 4)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+          In 1–3 Monaten
+        </div>
+        <div class="option-tile" onclick="wizardSelect(this, 4)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></div>
+          In 3–12 Monaten
+        </div>
+        <div class="option-tile" onclick="wizardSelect(this, 4)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></div>
+          Nur informieren
+        </div>
+      </div>
+      <div class="wizard-nav">
+        <button class="btn-wizard-back" onclick="wizardBack()">← Zurück</button>
+        <span></span>
+      </div>
+    </div>
+
+    <!-- STEP 6: Kontaktdaten -->
+    <div class="wizard-step" data-step="5">
+      <p class="step-counter">Schritt 6 von 6</p>
+      <h2 class="wizard-question">Fast geschafft! Wohin senden wir Ihr Angebot?</h2>
+      <p class="wizard-sub">Als Bonus erhalten Sie Ihr persönliches Immobilien-Portal mit Marktwert und Vergleichsdaten per E-Mail.</p>
+      <div class="form-card">
+        <div class="form-group">
+          <label>Vor- und Nachname</label>
+          <input type="text" placeholder="Max Mustermann">
+        </div>
+        <div class="form-group">
+          <label>E-Mail-Adresse</label>
+          <input type="email" placeholder="max@beispiel.de">
+        </div>
+        <div class="form-group">
+          <label>Telefonnummer <span class="optional">(optional)</span></label>
+          <input type="tel" placeholder="+49 170 1234567">
+        </div>
+        <div class="dsgvo-notice">
+          Ihre Daten werden gemäß der Datenschutzgrundverordnung (DSGVO) verarbeitet und nicht an Dritte verkauft. Sie dienen ausschließlich dazu, Ihnen bestmöglich weiterzuhelfen. Weitere Informationen finden Sie in unserer <a href="#">Datenschutzerklärung</a>.
+        </div>
+        <button class="btn-primary" onclick="goToPage('callback-confirmed-self')">Angebot anfordern →</button>
+      </div>
+      <div class="wizard-nav">
+        <button class="btn-wizard-back" onclick="wizardBack()">← Zurück</button>
+        <span></span>
+      </div>
     </div>
 
     <!-- Floating chat bubble for AI support -->
@@ -916,6 +1143,11 @@
       }
     }
 
+    if (pageId === 'self-onboard') {
+      wizardCurrentStep = 0;
+      renderWizard();
+    }
+
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const target = document.getElementById('page-' + pageId);
     if (target) {
@@ -923,6 +1155,59 @@
       window.scrollTo(0, 0);
     }
   }
+
+  // --- Wizard logic for self-onboard ---
+  var WIZARD_TOTAL = 6;
+  var wizardCurrentStep = 0;
+
+  function renderWizard() {
+    var bar = document.getElementById('wizard-progress');
+    if (!bar) return;
+    var html = '';
+    for (var i = 0; i < WIZARD_TOTAL; i++) {
+      var cls = i < wizardCurrentStep ? 'done' : (i === wizardCurrentStep ? 'active' : '');
+      html += '<div class="step-dot ' + cls + '"></div>';
+      if (i < WIZARD_TOTAL - 1) {
+        html += '<div class="step-line ' + (i < wizardCurrentStep ? 'done' : '') + '"></div>';
+      }
+    }
+    bar.innerHTML = html;
+
+    document.querySelectorAll('#page-self-onboard .wizard-step').forEach(function(el) {
+      el.classList.remove('active');
+    });
+    var active = document.querySelector('#page-self-onboard .wizard-step[data-step="' + wizardCurrentStep + '"]');
+    if (active) active.classList.add('active');
+  }
+
+  function wizardSelect(tile, step) {
+    tile.parentElement.querySelectorAll('.option-tile').forEach(function(t) {
+      t.classList.remove('selected');
+    });
+    tile.classList.add('selected');
+    setTimeout(function() {
+      wizardNext(step);
+    }, 250);
+  }
+
+  function wizardNext(fromStep) {
+    if (fromStep < WIZARD_TOTAL - 1) {
+      wizardCurrentStep = fromStep + 1;
+      renderWizard();
+      window.scrollTo(0, 0);
+    }
+  }
+
+  function wizardBack() {
+    if (wizardCurrentStep > 0) {
+      wizardCurrentStep--;
+      renderWizard();
+      window.scrollTo(0, 0);
+    }
+  }
+
+  // Initialize wizard on page load
+  renderWizard();
 
   // Query parameter routing for Figma capture compatibility
   (function() {
