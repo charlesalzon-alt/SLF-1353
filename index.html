@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
   <style>
     :root {
       --dark-blue: #002c4a;
@@ -414,6 +415,48 @@
       color: var(--dark-gray);
     }
 
+    /* Floating chat FAB for self-onboard */
+    .chat-fab {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: var(--dark-blue);
+      color: var(--white);
+      border-radius: 28px;
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(0,44,74,0.3);
+      z-index: 50;
+      transition: background 0.2s;
+      text-decoration: none;
+    }
+    .chat-fab:hover { background: var(--dark-blue-hover); }
+    .chat-fab svg {
+      width: 24px; height: 24px;
+      fill: none; stroke: var(--mint);
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    }
+    .chat-fab .fab-label {
+      font-size: 0.875rem; font-weight: 500;
+    }
+
+    /* ElevenLabs widget container */
+    .elevenlabs-container {
+      background: var(--white);
+      border: 2px solid var(--clouds);
+      border-radius: 12px;
+      min-height: 420px;
+      margin-bottom: 2rem;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     .divider {
       border: none;
       border-top: 1px solid var(--clouds);
@@ -572,17 +615,17 @@
 
   <div class="choose-section">
     <div class="cards-grid">
-      <!-- Card A: Self-Service -->
+      <!-- Card A: Self-Service Quote Request -->
       <div class="path-card" onclick="goToPage('self-onboard')">
-        <span class="card-badge">Sofort verfügbar</span>
+        <span class="card-badge">Schnell & einfach</span>
         <div class="card-icon">
-          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
         </div>
-        <h3>Sofort Ihr persönliches Portal erhalten</h3>
-        <p class="card-desc">Erhalten Sie in wenigen Sekunden eine Marktanalyse Ihrer Immobilie — mit Werteinschätzung, Vergleichsdaten und Nachbarschaftsinfos.</p>
+        <h3>Finanzierungsangebot selbst anfordern</h3>
+        <p class="card-desc">Beantworten Sie ein paar kurze Fragen und erhalten Sie ein unverbindliches Finanzierungsangebot — plus ein persönliches Immobilien-Portal als Bonus.</p>
         <p class="card-sub">Kein Gespräch nötig — direkt loslegen</p>
-        <button class="btn-primary" onclick="event.stopPropagation(); goToPage('self-onboard')">Portal erstellen →</button>
-        <p class="card-time">~ 2 Minuten</p>
+        <button class="btn-primary" onclick="event.stopPropagation(); goToPage('self-onboard')">Angebot anfordern →</button>
+        <p class="card-time">~ 3 Minuten</p>
       </div>
 
       <!-- Card B: AI Assistant -->
@@ -627,11 +670,34 @@
 
   <div class="inner-page">
     <div class="page-heading">
-      <h1 style="font-size:1.75rem;">Fast geschafft! Nur noch ein paar Angaben.</h1>
-      <p>Wir erstellen Ihr persönliches Immobilien-Portal mit Marktwert, Vergleichsdaten und Finanzierungsinformationen.</p>
+      <h1 style="font-size:1.75rem;">Ihr individuelles Finanzierungsangebot</h1>
+      <p>Beantworten Sie ein paar Fragen — wir erstellen Ihnen ein unverbindliches Angebot. Als Bonus erhalten Sie Ihr persönliches Immobilien-Portal per E-Mail.</p>
     </div>
 
     <div class="form-card" style="margin-top:1.5rem;">
+      <div class="form-group">
+        <label>Was möchten Sie finanzieren?</label>
+        <div class="select-wrapper">
+          <select>
+            <option value="" disabled selected>Bitte wählen</option>
+            <option value="purchase">Immobilienkauf</option>
+            <option value="refinancing">Anschlussfinanzierung</option>
+            <option value="renovation">Modernisierung</option>
+            <option value="general">Allgemeine Beratung</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Kaufpreis / Immobilienwert <span class="optional">(ca.)</span></label>
+        <input type="text" placeholder="z.B. 450.000 €">
+      </div>
+      <div class="form-group">
+        <label>Eigenkapital <span class="optional">(ca.)</span></label>
+        <input type="text" placeholder="z.B. 80.000 €">
+      </div>
+
+      <hr class="divider" style="margin:1.25rem 0;">
+
       <div class="form-group">
         <label>Vor- und Nachname</label>
         <input type="text" placeholder="Max Mustermann">
@@ -647,11 +713,17 @@
       <div class="dsgvo-notice">
         Ihre Daten werden gemäß der Datenschutzgrundverordnung (DSGVO) verarbeitet und nicht an Dritte verkauft. Sie dienen ausschließlich dazu, Ihnen bestmöglich weiterzuhelfen. Weitere Informationen finden Sie in unserer <a href="#">Datenschutzerklärung</a>.
       </div>
-      <button class="btn-primary" onclick="goToPage('callback-confirmed-self')">Portal erstellen →</button>
+      <button class="btn-primary" onclick="goToPage('callback-confirmed-self')">Angebot anfordern →</button>
     </div>
     <div class="back-link">
       <button class="ghost-link" onclick="goToPage('choose-path')">← Zurück zur Auswahl</button>
     </div>
+
+    <!-- Floating chat bubble for AI support -->
+    <a class="chat-fab" onclick="goToPage('ai-assistant')">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      <span class="fab-label">Hilfe vom KI-Assistenten</span>
+    </a>
   </div>
 </div>
 
@@ -675,12 +747,8 @@
       <strong>Hinweis:</strong> Sie sprechen mit einem KI-gestützten Assistenten, nicht mit einem Menschen. Ihre Daten werden gemäß DSGVO geschützt.
     </div>
 
-    <div class="chat-widget-placeholder">
-      <div class="chat-bubble">
-        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </div>
-      <p><strong>KI-Chat wird geladen…</strong></p>
-      <p>ElevenLabs ConvAI Widget</p>
+    <div class="elevenlabs-container">
+      <elevenlabs-convai agent-id="agent_8101kmdjapcrf9ttb2jb3q922wq4" server-location="eu-residency"></elevenlabs-convai>
     </div>
 
     <hr class="divider">
@@ -778,9 +846,9 @@
     <div class="confirm-icon">
       <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
     </div>
-    <h1>Ihr Portal wird erstellt!</h1>
-    <p class="confirm-body">Wir generieren jetzt Ihr persönliches Immobilien-Portal mit Marktwert, Vergleichsdaten und Finanzierungsinformationen. Sie werden in wenigen Sekunden weitergeleitet.</p>
-    <div class="portal-teaser">In der Zwischenzeit: Wir senden Ihnen den Portal-Link auch per E-Mail, damit Sie jederzeit darauf zugreifen können.</div>
+    <h1>Vielen Dank — Ihr Angebot wird vorbereitet!</h1>
+    <p class="confirm-body">Wir haben Ihre Angaben erhalten. Ein Baufi24 Berater wird auf dieser Basis ein individuelles Finanzierungsangebot für Sie erstellen und sich bei Ihnen melden.</p>
+    <div class="portal-teaser">Als Bonus: Sie erhalten in Kürze per E-Mail Ihr persönliches Immobilien-Portal mit Marktwert, Vergleichsdaten und Nachbarschaftsinfos.</div>
     <a href="https://baufi24.de" class="btn-secondary">Zurück zur Baufi24 Website →</a>
   </div>
 </div>
@@ -801,7 +869,7 @@
     </div>
     <h1>Vielen Dank — wir melden uns bei Ihnen!</h1>
     <p class="confirm-body">Unser virtueller Assistent ruft Sie in Kürze an. Bitte halten Sie Ihr Telefon bereit.</p>
-    <div class="portal-teaser">In der Zwischenzeit: Wir haben Ihr persönliches Immobilien-Portal erstellt. Sie erhalten den Link per E-Mail.</div>
+    <div class="portal-teaser">Als Bonus: Sie erhalten per E-Mail Ihr persönliches Immobilien-Portal mit Marktwert und Vergleichsdaten zu Ihrer Immobilie.</div>
     <a href="https://baufi24.de" class="btn-secondary">Zurück zur Baufi24 Website →</a>
   </div>
 </div>
@@ -822,7 +890,7 @@
     </div>
     <h1>Vielen Dank — wir melden uns bei Ihnen!</h1>
     <p class="confirm-body">Ein Baufi24 Berater wird sich innerhalb von 24 Stunden bei Ihnen melden — persönlich, kostenlos und unverbindlich.</p>
-    <div class="portal-teaser">In der Zwischenzeit: Wir haben Ihr persönliches Immobilien-Portal erstellt. Sie erhalten den Link per E-Mail.</div>
+    <div class="portal-teaser">Als Bonus: Sie erhalten per E-Mail Ihr persönliches Immobilien-Portal mit Marktwert und Vergleichsdaten zu Ihrer Immobilie.</div>
     <a href="https://baufi24.de" class="btn-secondary">Zurück zur Baufi24 Website →</a>
   </div>
 </div>
@@ -831,7 +899,7 @@
 <div class="loading-overlay" id="loading-overlay">
   <div class="loading-card">
     <div class="spinner"></div>
-    <p style="font-weight:600; font-size:1.0625rem;">Portal wird erstellt…</p>
+    <p style="font-weight:600; font-size:1.0625rem;">Anfrage wird übermittelt…</p>
     <p style="color:var(--dark-gray); font-size:0.875rem; margin-top:0.5rem;">Bitte warten Sie einen Moment.</p>
   </div>
 </div>
