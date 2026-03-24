@@ -259,12 +259,12 @@
 
     .cards-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 1.5rem;
       margin-top: 2.5rem;
-    }
-    @media (max-width: 1024px) {
-      .cards-grid { grid-template-columns: 1fr 1fr; }
+      max-width: 720px;
+      margin-left: auto;
+      margin-right: auto;
     }
     @media (max-width: 640px) {
       .cards-grid { grid-template-columns: 1fr; }
@@ -426,37 +426,7 @@
       color: var(--dark-gray);
     }
 
-    /* Floating chat FAB for self-onboard */
-    .chat-fab {
-      position: fixed;
-      bottom: 1.5rem;
-      right: 1.5rem;
-      background: var(--dark-blue);
-      color: var(--white);
-      border-radius: 28px;
-      padding: 0.75rem 1.25rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      cursor: pointer;
-      box-shadow: 0 4px 16px rgba(0,44,74,0.3);
-      z-index: 50;
-      transition: background 0.2s;
-      text-decoration: none;
-    }
-    .chat-fab:hover { background: var(--dark-blue-hover); }
-    .chat-fab svg {
-      width: 24px; height: 24px;
-      fill: none; stroke: var(--mint);
-      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-    }
-    .chat-fab .fab-label {
-      font-size: 0.875rem; font-weight: 500;
-    }
-    @media (max-width: 480px) {
-      .chat-fab .fab-label { display: none; }
-      .chat-fab { border-radius: 50%; padding: 0.875rem; }
-    }
+    /* ElevenLabs widget container */
 
     /* Wizard stepper */
     .wizard-progress {
@@ -580,17 +550,6 @@
     .wizard-nav .btn-wizard-back:focus-visible {
       outline: 2px solid var(--dark-blue);
       outline-offset: 2px;
-    }
-
-    /* ElevenLabs widget container */
-    .elevenlabs-container {
-      position: relative;
-      min-height: 260px;
-      margin-bottom: 2rem;
-    }
-    .elevenlabs-container elevenlabs-convai {
-      position: absolute;
-      inset: 0;
     }
 
     .divider {
@@ -761,34 +720,18 @@
         <p class="card-desc">Beantworten Sie ein paar kurze Fragen und erhalten Sie ein unverbindliches Finanzierungsangebot — plus ein persönliches Immobilien-Portal als Bonus.</p>
         <p class="card-sub">Kein Gespräch nötig — direkt loslegen</p>
         <button class="btn-primary" onclick="event.stopPropagation(); goToPage('self-onboard')">Angebot anfordern →</button>
-        <p class="card-time">~ 3 Minuten</p>
       </div>
 
-      <!-- Card B: AI Assistant -->
+      <!-- Card B: Vocal AI Assistant -->
       <div class="path-card" onclick="goToPage('ai-assistant')">
         <span class="card-badge">KI-gestützt</span>
         <div class="card-icon">
-          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
         </div>
         <h3>Mit virtuellem Assistenten sprechen</h3>
-        <p class="card-desc">Unser KI-Assistent beantwortet Ihre Fragen zur Baufinanzierung — per Chat oder Telefon. Sofort verfügbar, auf Deutsch.</p>
+        <p class="card-desc">Unser KI-Assistent beantwortet Ihre Fragen zur Baufinanzierung — per Sprache, direkt im Browser. Sofort verfügbar, auf Deutsch.</p>
         <p class="card-sub">KI-gestützt · Unverbindlich · Auf Deutsch</p>
-        <button class="btn-primary" onclick="event.stopPropagation(); goToPage('ai-assistant')">Chat starten →</button>
-        <p class="card-time">~ 5 Minuten</p>
-        <p class="card-secondary"><button class="ghost-link" onclick="event.stopPropagation(); goToPage('ai-assistant')">Oder: Rückruf vom Assistenten erhalten</button></p>
-      </div>
-
-      <!-- Card C: Human Advisor -->
-      <div class="path-card" onclick="goToPage('human-advisor')">
-        <span class="card-badge">Persönlich</span>
-        <div class="card-icon">
-          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        </div>
-        <h3>Persönliche Beratung durch einen Experten</h3>
-        <p class="card-desc">Ein erfahrener Baufi24 Finanzierungsberater ruft Sie zurück und bespricht Ihre individuelle Situation — persönlich und kompetent.</p>
-        <p class="card-sub">Kostenlos · Unverbindlich · Innerhalb von 24h</p>
-        <button class="btn-primary" onclick="event.stopPropagation(); goToPage('human-advisor')">Rückruf vereinbaren →</button>
-        <p class="card-time">Rückruf innerhalb von 24h</p>
+        <button class="btn-primary" onclick="event.stopPropagation(); goToPage('ai-assistant')">Gespräch starten →</button>
       </div>
     </div>
   </div>
@@ -972,11 +915,8 @@
       </div>
     </div>
 
-    <!-- Floating chat bubble for AI support -->
-    <a class="chat-fab" onclick="goToPage('ai-assistant')">
-      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-      <span class="fab-label">Hilfe vom KI-Assistenten</span>
-    </a>
+    <!-- ElevenLabs widget as floating support on self-onboard -->
+    <elevenlabs-convai agent-id="agent_8101kmdjapcrf9ttb2jb3q922wq4" server-location="eu-residency"></elevenlabs-convai>
   </div>
 </div>
 
@@ -990,40 +930,16 @@
     </a>
   </header>
 
-  <div class="inner-page">
-    <div class="page-heading">
-      <h1 style="font-size:1.75rem;">Ihr virtueller Finanzierungsberater</h1>
-      <p>Stellen Sie Ihre Fragen — unser KI-Assistent hilft Ihnen sofort weiter. Per Chat oder Telefon.</p>
-    </div>
-
-    <div class="ai-disclosure">
+  <div class="inner-page" style="text-align:center;">
+    <div class="ai-disclosure" style="text-align:left; margin-top:2rem;">
       <strong>Hinweis:</strong> Sie sprechen mit einem KI-gestützten Assistenten, nicht mit einem Menschen. Ihre Daten werden gemäß DSGVO geschützt.
     </div>
 
-    <div class="elevenlabs-container">
+    <div style="margin:2rem 0;">
       <elevenlabs-convai agent-id="agent_8101kmdjapcrf9ttb2jb3q922wq4" server-location="eu-residency"></elevenlabs-convai>
     </div>
 
-    <hr class="divider">
-
-    <div class="voice-section">
-      <h3>Lieber telefonieren?</h3>
-      <p>Unser virtueller Assistent ruft Sie an und bespricht Ihre Fragen am Telefon.</p>
-
-      <div class="form-card">
-        <div class="form-group">
-          <label>Ihr Name</label>
-          <input type="text" placeholder="Max Mustermann">
-        </div>
-        <div class="form-group">
-          <label>Ihre Telefonnummer</label>
-          <input type="tel" placeholder="+49 170 1234567">
-        </div>
-        <button class="btn-primary" onclick="goToPage('callback-confirmed-ai')">Rückruf vom Assistenten anfordern →</button>
-      </div>
-    </div>
-
-    <div class="back-link" style="margin-top:1.5rem;">
+    <div class="back-link" style="margin-top:1rem;">
       <button class="ghost-link" onclick="goToPage('choose-path')">← Zurück zur Auswahl</button>
     </div>
   </div>
