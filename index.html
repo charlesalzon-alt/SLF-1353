@@ -64,6 +64,7 @@
       gap: 0.5rem;
     }
     .header-phone:hover { color: var(--mint); }
+    .header-phone { white-space: nowrap; }
     .phone-icon {
       width: 18px; height: 18px;
       fill: currentColor;
@@ -176,6 +177,13 @@
       text-decoration: none;
     }
     .btn-primary:hover { background: var(--dark-mint); }
+    .btn-primary:focus-visible,
+    .btn-secondary:focus-visible,
+    .ghost-link:focus-visible,
+    .option-tile:focus-visible {
+      outline: 2px solid var(--dark-blue);
+      outline-offset: 2px;
+    }
 
     .btn-secondary {
       display: inline-flex;
@@ -255,7 +263,10 @@
       gap: 1.5rem;
       margin-top: 2.5rem;
     }
-    @media (max-width: 768px) {
+    @media (max-width: 1024px) {
+      .cards-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 640px) {
       .cards-grid { grid-template-columns: 1fr; }
     }
 
@@ -442,6 +453,10 @@
     .chat-fab .fab-label {
       font-size: 0.875rem; font-weight: 500;
     }
+    @media (max-width: 480px) {
+      .chat-fab .fab-label { display: none; }
+      .chat-fab { border-radius: 50%; padding: 0.875rem; }
+    }
 
     /* Wizard stepper */
     .wizard-progress {
@@ -469,6 +484,7 @@
     .wizard-step {
       display: none;
       animation: wizardIn 0.25s ease;
+      will-change: transform, opacity;
     }
     .wizard-step.active { display: block; }
     @keyframes wizardIn {
@@ -503,6 +519,12 @@
     }
     @media (max-width: 400px) {
       .option-tiles { grid-template-columns: 1fr; }
+    }
+    .option-tiles-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    @media (max-width: 520px) {
+      .option-tiles-3 { grid-template-columns: 1fr; }
     }
     .option-tile {
       background: var(--white);
@@ -555,6 +577,10 @@
       padding: 0.5rem 0;
     }
     .wizard-nav .btn-wizard-back:hover { text-decoration: underline; }
+    .wizard-nav .btn-wizard-back:focus-visible {
+      outline: 2px solid var(--dark-blue);
+      outline-offset: 2px;
+    }
 
     /* ElevenLabs widget container */
     .elevenlabs-container {
@@ -846,7 +872,7 @@
       <p class="step-counter">Schritt 3 von 6</p>
       <h2 class="wizard-question">Wie wird die Immobilie genutzt?</h2>
       <p class="wizard-sub">Dies beeinflusst die Finanzierungsbedingungen.</p>
-      <div class="option-tiles" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="option-tiles option-tiles-3">
         <div class="option-tile" onclick="wizardSelect(this, 2)">
           <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
           Eigennutzung
@@ -1046,7 +1072,7 @@
       </div>
       <div class="form-group">
         <label>Gibt es etwas, das Sie uns vorab mitteilen möchten? <span class="optional">(optional)</span></label>
-        <input type="text" placeholder="z.B. besondere Wünsche, Zeitdruck, etc.">
+        <textarea rows="3" placeholder="z.B. besondere Wünsche, Zeitdruck, etc." style="width:100%;padding:0.875rem 1rem;border:2px solid var(--clouds);border-radius:8px;font-family:'Inter',sans-serif;font-size:1rem;color:var(--dark-blue);resize:vertical;"></textarea>
       </div>
       <div class="dsgvo-notice">
         Ihre Daten werden gemäß der Datenschutzgrundverordnung (DSGVO) verarbeitet und nicht an Dritte verkauft. Sie dienen ausschließlich dazu, Ihnen bestmöglich weiterzuhelfen. Weitere Informationen finden Sie in unserer <a href="#">Datenschutzerklärung</a>.
