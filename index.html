@@ -7,7 +7,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
   <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
   <style>
     :root {
@@ -28,6 +27,7 @@
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { overflow-x: hidden; }
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -645,6 +645,69 @@
       margin: 0 auto 1.5rem;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Sticky AI help FAB */
+    .ai-help-fab { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 50; display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.25rem; background: var(--dark-blue); color: var(--mint); border: none; border-radius: 100px; font-family: 'Inter', sans-serif; font-size: 0.875rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 16px rgba(0,44,74,0.3); transition: all 0.2s; }
+    .ai-help-fab:hover { background: var(--dark-blue-hover); box-shadow: 0 6px 24px rgba(0,44,74,0.4); transform: translateY(-1px); }
+    .ai-help-fab svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; }
+
+    /* Form row helpers for AI vars page */
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; }
+
+    /* Touch targets & focus */
+    .btn-primary, .btn-secondary { min-height: 44px; }
+    .ghost-link { min-height: 44px; display: inline-flex; align-items: center; }
+    .btn-wizard-back { min-height: 44px; }
+    .btn-primary:focus-visible, .btn-secondary:focus-visible,
+    .ghost-link:focus-visible, .option-tile:focus-visible,
+    .btn-wizard-back:focus-visible, .ai-help-fab:focus-visible {
+      outline: 2px solid var(--dark-blue);
+      outline-offset: 2px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 1.75rem; }
+      .hero p { font-size: 1rem; }
+      .page-heading h1 { font-size: 1.625rem; }
+    }
+
+    @media (max-width: 640px) {
+      .hero { padding: 2.5rem 1.25rem 3rem; }
+      .hero h1 { font-size: 1.5rem; }
+      .form-section { padding: 0 1rem 2rem; }
+      .wizard-step { padding-bottom: 4rem; }
+    }
+
+    @media (max-width: 520px) {
+      .header { padding: 0.75rem 1rem; }
+      .header-phone { font-size: 0; gap: 0; min-height: 44px; min-width: 44px; justify-content: center; border-radius: 8px; }
+      .header-phone:hover { background: rgba(255,255,255,0.1); }
+      .header-phone .phone-icon { width: 22px; height: 22px; }
+      .hero p { font-size: 0.9375rem; }
+      .form-card { padding: 1.5rem; }
+      .page-heading { padding: 2rem 1rem 0.5rem; }
+      .page-heading h1 { font-size: 1.5rem; }
+      .page-heading p { font-size: 1rem; }
+      .choose-section { padding: 0 1rem 2rem; }
+      .path-card h3 { padding-right: 0; font-size: 1.125rem; }
+      .card-badge { position: static; display: inline-block; margin-bottom: 0.75rem; }
+      .inner-page { padding: 0 1rem 2rem; }
+      .confirm-section { padding: 3rem 1rem; }
+      .confirm-section h1 { font-size: 1.375rem; }
+      .form-row, .form-row-3 { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 400px) {
+      .hero h1 { font-size: 1.25rem; }
+      .hero p { font-size: 0.875rem; }
+      .page-heading h1 { font-size: 1.25rem; }
+      .form-group input, .form-group select { padding: 0.625rem 0.75rem; }
+      .btn-primary, .btn-secondary { font-size: 0.875rem; padding: 0.625rem 1rem; min-height: 44px; }
+      .option-tile { padding: 1rem 0.75rem; }
+      .ai-help-fab { padding: 0.625rem 1rem; font-size: 0.8125rem; bottom: 1rem; right: 1rem; }
+    }
   </style>
 </head>
 <body>
@@ -915,9 +978,12 @@
       </div>
     </div>
 
-    <!-- ElevenLabs widget as floating support on self-onboard -->
-    <elevenlabs-convai agent-id="agent_8101kmdjapcrf9ttb2jb3q922wq4" server-location="eu-residency" dynamic-variables='{"name":""}'></elevenlabs-convai>
   </div>
+
+  <button class="ai-help-fab" onclick="goToPage('ai-assistant')">
+    <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+    Hilfe? KI-Assistent
+  </button>
 </div>
 
 <!-- ================ PAGE 3B: AI ASSISTANT ================ -->
@@ -930,18 +996,54 @@
     </a>
   </header>
 
-  <div class="inner-page" style="text-align:center;">
+  <div class="inner-page" style="text-align:center; max-width:640px;">
     <div class="ai-disclosure" style="text-align:left; margin-top:2rem;">
       <strong>Hinweis:</strong> Sie sprechen mit einem KI-gestützten Assistenten, nicht mit einem Menschen. Ihre Daten werden gemäß DSGVO geschützt.
     </div>
+    <p style="font-size:0.9375rem; color:var(--dark-gray); margin-bottom:1.5rem; text-align:left;">Fragen Sie z.B.: <em>„Was ist eine Anschlussfinanzierung?"</em>, <em>„Wie viel Eigenkapital brauche ich?"</em> oder <em>„Welche Unterlagen benötige ich?"</em></p>
 
-    <div style="margin:2rem 0;">
-      <elevenlabs-convai agent-id="agent_8101kmdjapcrf9ttb2jb3q922wq4" server-location="eu-residency" dynamic-variables='{"name":""}'></elevenlabs-convai>
+    <div id="ai-vars-form" style="text-align:left; margin-bottom:1.5rem;">
+      <h3 style="font-size:0.9375rem; font-weight:600; margin-bottom:1rem; color:var(--dark-blue);">Kontext-Variablen <span style="font-weight:400; color:var(--dark-gray); font-size:0.8125rem;">— vor dem Start anpassen</span></h3>
+      <div class="form-row">
+        <div class="form-group"><label>Name</label><input type="text" id="dv-name" placeholder="z.B. Max Mustermann"></div>
+        <div class="form-group"><label>Immobilienadresse</label><input type="text" id="dv-property" placeholder="z.B. Musterstraße 12, 80331 München"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Interesse</label>
+          <div class="select-wrapper"><select id="dv-interest_type">
+            <option value="Immobilienkauf" selected>Immobilienkauf</option>
+            <option value="Anschlussfinanzierung">Anschlussfinanzierung</option>
+            <option value="Modernisierung">Modernisierung</option>
+            <option value="Neubau">Neubau</option>
+            <option value="Allgemeine Beratung">Allgemeine Beratung</option>
+          </select></div>
+        </div>
+        <div class="form-group">
+          <label>Immobilienwert</label>
+          <input type="text" id="dv-propertyValue" placeholder="z.B. 450.000 €">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>E-Mail</label><input type="email" id="dv-email" placeholder="max@beispiel.de"></div>
+        <div class="form-group"><label>Telefon</label><input type="tel" id="dv-phone" placeholder="+49 170 1234567"></div>
+      </div>
+      <div class="form-row-3">
+        <div class="form-group"><label>Markenname</label><input type="text" id="dv-brand_name" value="Baufi24"></div>
+        <div class="form-group"><label>KI-Name</label><input type="text" id="dv-ai_agent_name" value="Mia"></div>
+        <div class="form-group"><label>Agent ID</label><input type="text" id="dv-agent_id" value="agent_8101kmdjapcrf9ttb2jb3q922wq4" style="font-size:0.75rem;"></div>
+      </div>
     </div>
 
-    <div class="back-link" style="margin-top:1rem;">
-      <button class="ghost-link" onclick="goToPage('choose-path')">← Zurück zur Auswahl</button>
-    </div>
+    <button class="btn-primary" onclick="launchAgent()" id="launch-agent-btn" style="width:100%; margin-bottom:0.5rem; background:var(--dark-blue);">
+      <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+      KI-Gespräch starten
+    </button>
+
+    <div id="ai-widget-container" style="margin:1.5rem 0;"></div>
+
+    <div class="back-link" style="margin-top:1rem;"><button class="ghost-link" onclick="goToPage('self-onboard')">← Zurück zum Online-Antrag</button></div>
+    <div class="back-link" style="margin-top:0.5rem;"><button class="ghost-link" onclick="goToPage('choose-path')" style="font-size:0.8125rem; color:var(--dark-gray);">← Zurück zur Auswahl</button></div>
   </div>
 </div>
 
@@ -1074,10 +1176,30 @@
 </div>
 
 <script>
+  function launchAgent() {
+    var vars = {
+      name: document.getElementById('dv-name').value,
+      brand_name: document.getElementById('dv-brand_name').value,
+      ai_agent_name: document.getElementById('dv-ai_agent_name').value,
+      property: document.getElementById('dv-property').value,
+      propertyValue: document.getElementById('dv-propertyValue').value,
+      interest_type: document.getElementById('dv-interest_type').value,
+      email: document.getElementById('dv-email').value,
+      phone: document.getElementById('dv-phone').value
+    };
+    var agentId = document.getElementById('dv-agent_id').value;
+    var customerName = vars.name || '';
+    var firstMsg = customerName ? ('Hallo ' + customerName + '!') : 'Hallo! Wie kann ich Ihnen helfen?';
+    var container = document.getElementById('ai-widget-container');
+    container.innerHTML = '<elevenlabs-convai agent-id="' + agentId + '" server-location="eu-residency" language="de" first-message="' + firstMsg.replace(/"/g, '&quot;') + '" dynamic-variables=\'' + JSON.stringify(vars) + '\'></elevenlabs-convai>';
+    document.getElementById('ai-vars-form').style.display = 'none';
+    document.getElementById('launch-agent-btn').style.display = 'none';
+  }
+
   function goToPage(pageId) {
     if (pageId === 'choose-path') {
-      const address = document.getElementById('address-input').value;
-      const container = document.getElementById('address-bar-container');
+      var address = document.getElementById('address-input').value;
+      var container = document.getElementById('address-bar-container');
       if (address.trim()) {
         container.innerHTML = '<div class="address-bar">Ihre Immobilie: ' + address + '</div>';
       } else {
@@ -1090,8 +1212,29 @@
       renderWizard();
     }
 
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    const target = document.getElementById('page-' + pageId);
+    if (pageId === 'ai-assistant') {
+      document.getElementById('ai-widget-container').innerHTML = '';
+      document.getElementById('ai-vars-form').style.display = '';
+      document.getElementById('launch-agent-btn').style.display = '';
+      var addrInput = document.getElementById('address-input');
+      if (addrInput && addrInput.value.trim()) {
+        document.getElementById('dv-property').value = addrInput.value.trim();
+      }
+      var interestSelect = document.getElementById('interest-select');
+      if (interestSelect && interestSelect.value) {
+        var interestMap = { purchase: 'Immobilienkauf', refinancing: 'Anschlussfinanzierung', renovation: 'Modernisierung', general: 'Allgemeine Beratung' };
+        var mapped = interestMap[interestSelect.value];
+        if (mapped) {
+          var dvInterest = document.getElementById('dv-interest_type');
+          for (var i = 0; i < dvInterest.options.length; i++) {
+            if (dvInterest.options[i].value === mapped) { dvInterest.selectedIndex = i; break; }
+          }
+        }
+      }
+    }
+
+    document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+    var target = document.getElementById('page-' + pageId);
     if (target) {
       target.classList.add('active');
       window.scrollTo(0, 0);
@@ -1151,21 +1294,16 @@
   // Initialize wizard on page load
   renderWizard();
 
-  // Query parameter routing for Figma capture compatibility
   (function() {
-    const params = new URLSearchParams(window.location.search);
-    const page = params.get('page');
+    var params = new URLSearchParams(window.location.search);
+    var page = params.get('page');
     if (page) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      const target = document.getElementById('page-' + page);
+      document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+      var target = document.getElementById('page-' + page);
       if (target) target.classList.add('active');
-
-      // Pre-fill address bar on choose-path page
       if (page === 'choose-path' || page === 'self-onboard' || page === 'ai-assistant' || page === 'human-advisor') {
-        const container = document.getElementById('address-bar-container');
-        if (container) {
-          container.innerHTML = '<div class="address-bar">Ihre Immobilie: Musterstraße 12, 80331 München</div>';
-        }
+        var container = document.getElementById('address-bar-container');
+        if (container) container.innerHTML = '<div class="address-bar">Ihre Immobilie: Musterstraße 12, 80331 München</div>';
       }
     }
   })();
