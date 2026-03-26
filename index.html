@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Baufi24 — Mein Weg zur Finanzierung</title>
+  <meta name="theme-color" content="#002c4a">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -122,7 +123,8 @@
       font-size: 0.8125rem;
     }
     .form-group input,
-    .form-group select {
+    .form-group select,
+    .form-group textarea {
       width: 100%;
       padding: 0.875rem 1rem;
       border: 2px solid var(--clouds);
@@ -135,12 +137,15 @@
       appearance: none;
       -webkit-appearance: none;
     }
-    .form-group input::placeholder { color: var(--sea); }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: var(--sea); }
     .form-group input:focus,
-    .form-group select:focus {
+    .form-group select:focus,
+    .form-group textarea:focus {
       outline: none;
       border-color: var(--dark-blue);
     }
+    .form-group textarea { resize: vertical; }
     .select-wrapper {
       position: relative;
     }
@@ -259,15 +264,15 @@
 
     .cards-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 1.5rem;
       margin-top: 2.5rem;
-      max-width: 720px;
+      max-width: 960px;
       margin-left: auto;
       margin-right: auto;
     }
-    @media (max-width: 640px) {
-      .cards-grid { grid-template-columns: 1fr; }
+    @media (max-width: 768px) {
+      .cards-grid { grid-template-columns: 1fr; max-width: 480px; }
     }
 
     .path-card {
@@ -677,8 +682,9 @@
       .hero { padding: 2.5rem 1.25rem 3rem; }
       .hero h1 { font-size: 1.5rem; }
       .form-section { padding: 0 1rem 2rem; }
-      .wizard-step { padding-bottom: 4rem; }
+      .wizard-step { padding-bottom: 5rem; }
     }
+    .wizard-step[data-step="5"] { padding-bottom: 5rem; }
 
     @media (max-width: 520px) {
       .header { padding: 0.75rem 1rem; }
@@ -703,7 +709,7 @@
       .hero h1 { font-size: 1.25rem; }
       .hero p { font-size: 0.875rem; }
       .page-heading h1 { font-size: 1.25rem; }
-      .form-group input, .form-group select { padding: 0.625rem 0.75rem; }
+      .form-group input, .form-group select, .form-group textarea { padding: 0.625rem 0.75rem; }
       .btn-primary, .btn-secondary { font-size: 0.875rem; padding: 0.625rem 1rem; min-height: 44px; }
       .option-tile { padding: 1rem 0.75rem; }
       .ai-help-fab { padding: 0.625rem 1rem; font-size: 0.8125rem; bottom: 1rem; right: 1rem; }
@@ -795,6 +801,18 @@
         <p class="card-desc">Unser KI-Assistent beantwortet Ihre Fragen zur Baufinanzierung — per Sprache, direkt im Browser. Sofort verfügbar, auf Deutsch.</p>
         <p class="card-sub">KI-gestützt · Unverbindlich · Auf Deutsch</p>
         <button class="btn-primary" onclick="event.stopPropagation(); goToPage('ai-assistant')">Gespräch starten →</button>
+      </div>
+
+      <!-- Card C: Human Advisor Callback -->
+      <div class="path-card" onclick="goToPage('human-advisor')">
+        <span class="card-badge">Persönlich</span>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <h3>Persönliche Beratung vereinbaren</h3>
+        <p class="card-desc">Ein erfahrener Baufi24 Berater ruft Sie zurück — persönlich, kostenlos und innerhalb von 24 Stunden.</p>
+        <p class="card-sub">Persönlich · Kostenlos · Innerhalb von 24h</p>
+        <button class="btn-primary" onclick="event.stopPropagation(); goToPage('human-advisor')">Rückruf vereinbaren →</button>
       </div>
     </div>
   </div>
@@ -1035,7 +1053,7 @@
       </div>
     </div>
 
-    <button class="btn-primary" onclick="launchAgent()" id="launch-agent-btn" style="width:100%; margin-bottom:0.5rem; background:var(--dark-blue);">
+    <button class="btn-primary" onclick="launchAgent()" id="launch-agent-btn" style="width:100%; margin-bottom:0.5rem; background:var(--dark-blue); color:var(--white);">
       <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
       KI-Gespräch starten
     </button>
@@ -1090,7 +1108,7 @@
       </div>
       <div class="form-group">
         <label>Gibt es etwas, das Sie uns vorab mitteilen möchten? <span class="optional">(optional)</span></label>
-        <textarea rows="3" placeholder="z.B. besondere Wünsche, Zeitdruck, etc." style="width:100%;padding:0.875rem 1rem;border:2px solid var(--clouds);border-radius:8px;font-family:'Inter',sans-serif;font-size:1rem;color:var(--dark-blue);resize:vertical;"></textarea>
+        <textarea rows="3" placeholder="z.B. besondere Wünsche, Zeitdruck, etc."></textarea>
       </div>
       <div class="dsgvo-notice">
         Ihre Daten werden gemäß der Datenschutzgrundverordnung (DSGVO) verarbeitet und nicht an Dritte verkauft. Sie dienen ausschließlich dazu, Ihnen bestmöglich weiterzuhelfen. Weitere Informationen finden Sie in unserer <a href="#">Datenschutzerklärung</a>.
@@ -1120,27 +1138,6 @@
     <h1>Vielen Dank — Ihr Angebot wird vorbereitet!</h1>
     <p class="confirm-body">Wir haben Ihre Angaben erhalten. Ein Baufi24 Berater wird auf dieser Basis ein individuelles Finanzierungsangebot für Sie erstellen und sich bei Ihnen melden.</p>
     <div class="portal-teaser">Als Bonus: Sie erhalten in Kürze per E-Mail Ihr persönliches Immobilien-Portal mit Marktwert, Vergleichsdaten und Nachbarschaftsinfos.</div>
-    <a href="https://baufi24.de" class="btn-secondary">Zurück zur Baufi24 Website →</a>
-  </div>
-</div>
-
-<!-- ================ PAGE 4: CALLBACK CONFIRMED (AI) ================ -->
-<div class="page" id="page-callback-confirmed-ai">
-  <header class="header">
-    <div class="header-logo">Baufi<span>24</span></div>
-    <a href="tel:08008084000" class="header-phone">
-      <svg class="phone-icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-      0800 / 808 4000
-    </a>
-  </header>
-
-  <div class="confirm-section">
-    <div class="confirm-icon">
-      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-    </div>
-    <h1>Vielen Dank — wir melden uns bei Ihnen!</h1>
-    <p class="confirm-body">Unser virtueller Assistent ruft Sie in Kürze an. Bitte halten Sie Ihr Telefon bereit.</p>
-    <div class="portal-teaser">Als Bonus: Sie erhalten per E-Mail Ihr persönliches Immobilien-Portal mit Marktwert und Vergleichsdaten zu Ihrer Immobilie.</div>
     <a href="https://baufi24.de" class="btn-secondary">Zurück zur Baufi24 Website →</a>
   </div>
 </div>
