@@ -264,14 +264,14 @@
 
     .cards-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 1.5rem;
       margin-top: 2.5rem;
-      max-width: 960px;
+      max-width: 720px;
       margin-left: auto;
       margin-right: auto;
     }
-    @media (max-width: 768px) {
+    @media (max-width: 640px) {
       .cards-grid { grid-template-columns: 1fr; max-width: 480px; }
     }
 
@@ -803,17 +803,6 @@
         <button class="btn-primary" onclick="event.stopPropagation(); goToPage('ai-assistant')">Gespräch starten →</button>
       </div>
 
-      <!-- Card C: Human Advisor Callback -->
-      <div class="path-card" onclick="goToPage('human-advisor')">
-        <span class="card-badge">Persönlich</span>
-        <div class="card-icon">
-          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        </div>
-        <h3>Persönliche Beratung vereinbaren</h3>
-        <p class="card-desc">Ein erfahrener Baufi24 Berater ruft Sie zurück — persönlich, kostenlos und innerhalb von 24 Stunden.</p>
-        <p class="card-sub">Persönlich · Kostenlos · Innerhalb von 24h</p>
-        <button class="btn-primary" onclick="event.stopPropagation(); goToPage('human-advisor')">Rückruf vereinbaren →</button>
-      </div>
     </div>
   </div>
 </div>
