@@ -1010,30 +1010,31 @@
     <p style="font-size:0.9375rem; color:var(--dark-gray); margin-bottom:1.5rem; text-align:left;">Fragen Sie z.B.: <em>„Was ist eine Anschlussfinanzierung?"</em>, <em>„Wie viel Eigenkapital brauche ich?"</em> oder <em>„Welche Unterlagen benötige ich?"</em></p>
 
     <div id="ai-vars-form" style="text-align:left; margin-bottom:1.5rem;">
-      <h3 style="font-size:0.9375rem; font-weight:600; margin-bottom:1rem; color:var(--dark-blue);">Kontext-Variablen <span style="font-weight:400; color:var(--dark-gray); font-size:0.8125rem;">— vor dem Start anpassen</span></h3>
+      <h3 style="font-size:0.9375rem; font-weight:600; margin-bottom:1rem; color:var(--dark-blue);">Kontext <span style="font-weight:400; color:var(--dark-gray); font-size:0.8125rem;">— optional, vor dem Start anpassen</span></h3>
       <div class="form-row">
-        <div class="form-group"><label>Name</label><input type="text" id="dv-name" value="Thomas Müller"></div>
-        <div class="form-group"><label>Immobilienadresse</label><input type="text" id="dv-property" value="Musterstraße 12, 80331 München"></div>
-      </div>
-      <div class="form-row">
+        <div class="form-group"><label>Name <span class="optional">(falls bekannt)</span></label><input type="text" id="dv-name" placeholder="z.B. Thomas Müller"></div>
         <div class="form-group">
-          <label>Interesse</label>
+          <label>Interesse <span class="optional">(falls bekannt)</span></label>
           <div class="select-wrapper"><select id="dv-interest_type">
-            <option value="Immobilienkauf" selected>Immobilienkauf</option>
+            <option value="" selected>— nicht bekannt —</option>
+            <option value="Immobilienkauf">Immobilienkauf</option>
             <option value="Anschlussfinanzierung">Anschlussfinanzierung</option>
             <option value="Modernisierung">Modernisierung</option>
             <option value="Neubau">Neubau</option>
             <option value="Allgemeine Beratung">Allgemeine Beratung</option>
           </select></div>
         </div>
-        <div class="form-group">
-          <label>Immobilienwert</label>
-          <input type="text" id="dv-propertyValue" value="450.000 €">
-        </div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label>E-Mail</label><input type="email" id="dv-email" value="thomas@beispiel.de"></div>
-        <div class="form-group"><label>Telefon</label><input type="tel" id="dv-phone" value="+49 170 1234567"></div>
+        <div class="form-group"><label>Immobilienadresse <span class="optional">(falls bekannt)</span></label><input type="text" id="dv-property" placeholder="z.B. Musterstraße 12, 80331 München"></div>
+        <div class="form-group">
+          <label>Quelle</label>
+          <div class="select-wrapper"><select id="dv-source">
+            <option value="self-onboard" selected>Self-Onboarding</option>
+            <option value="form">Kontaktformular</option>
+            <option value="call">Call Center (0800)</option>
+          </select></div>
+        </div>
       </div>
       <div class="form-row-3">
         <div class="form-group"><label>Markenname</label><input type="text" id="dv-brand_name" value="Baufi24"></div>
@@ -1164,17 +1165,15 @@
 <script>
   function launchAgent() {
     var vars = {
-      name: document.getElementById('dv-name').value,
       brand_name: document.getElementById('dv-brand_name').value,
       ai_agent_name: document.getElementById('dv-ai_agent_name').value,
-      property: document.getElementById('dv-property').value,
-      propertyValue: document.getElementById('dv-propertyValue').value,
-      interest_type: document.getElementById('dv-interest_type').value,
-      email: document.getElementById('dv-email').value,
-      phone: document.getElementById('dv-phone').value
+      name: document.getElementById('dv-name').value || '',
+      interest_type: document.getElementById('dv-interest_type').value || '',
+      property: document.getElementById('dv-property').value || '',
+      source: document.getElementById('dv-source').value || ''
     };
     var agentId = document.getElementById('dv-agent_id').value;
-    var customerName = vars.name || '';
+    var customerName = vars.name;
     var firstMsg = customerName ? ('Hallo ' + customerName + '!') : 'Hallo! Wie kann ich Ihnen helfen?';
     var container = document.getElementById('ai-widget-container');
     container.innerHTML = '<elevenlabs-convai agent-id="' + agentId + '" server-location="eu-residency" language="de" first-message="' + firstMsg.replace(/"/g, '&quot;') + '" dynamic-variables=\'' + JSON.stringify(vars) + '\'></elevenlabs-convai>';
@@ -1217,6 +1216,7 @@
           }
         }
       }
+      document.getElementById('dv-source').value = 'self-onboard';
     }
 
     document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
