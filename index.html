@@ -782,35 +782,64 @@
 
   <div class="inner-page" style="max-width:560px;">
     <div class="page-heading">
-      <h1 style="font-size:1.75rem;">Kontaktformular</h1>
-      <p>Teilen Sie uns Ihr Anliegen mit — anschließend verbinden wir Sie mit unserem KI-Assistenten für eine sofortige Beratung.</p>
+      <h1 style="font-size:1.75rem;">Wie können wir Ihnen helfen?</h1>
+      <p>Füllen Sie das Kontaktformular aus — anschließend verbinden wir Sie mit unserem KI-Assistenten für eine sofortige Beratung. Alle mit <strong>*</strong> gekennzeichneten Felder sind Pflichtfelder.</p>
     </div>
 
     <div class="form-card" style="margin-top:1.5rem;">
       <div class="form-group">
-        <label>Vor- und Nachname <span class="optional">(falls bekannt)</span></label>
-        <input type="text" id="form-name" placeholder="Max Mustermann">
-      </div>
-      <div class="form-group">
-        <label>E-Mail-Adresse <span class="optional">(optional)</span></label>
-        <input type="email" id="form-email" placeholder="max@beispiel.de">
-      </div>
-      <div class="form-group">
-        <label>Was interessiert Sie?</label>
+        <label>Anrede</label>
         <div class="select-wrapper">
-          <select id="form-interest">
+          <select id="form-anrede">
             <option value="" disabled selected>Bitte wählen</option>
-            <option value="Immobilienkauf">Immobilienkauf</option>
-            <option value="Anschlussfinanzierung">Anschlussfinanzierung</option>
-            <option value="Modernisierung">Modernisierung</option>
-            <option value="Neubau">Neubau</option>
-            <option value="Allgemeine Beratung">Allgemeine Beratung</option>
+            <option value="Herr">Herr</option>
+            <option value="Frau">Frau</option>
+            <option value="Divers">Divers</option>
           </select>
         </div>
       </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Vorname <strong>*</strong></label>
+          <input type="text" id="form-vorname" placeholder="Max" required>
+        </div>
+        <div class="form-group">
+          <label>Nachname <strong>*</strong></label>
+          <input type="text" id="form-nachname" placeholder="Mustermann" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>E-Mail-Adresse <strong>*</strong></label>
+          <input type="email" id="form-email" placeholder="max@beispiel.de" required>
+        </div>
+        <div class="form-group">
+          <label>Telefonnummer <span class="optional">(optional)</span></label>
+          <input type="tel" id="form-phone" placeholder="+49 170 1234567">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Postleitzahl <span class="optional">(optional)</span></label>
+          <input type="text" id="form-plz" placeholder="80331" inputmode="numeric" maxlength="5">
+        </div>
+        <div class="form-group">
+          <label>Ich interessiere mich für <strong>*</strong></label>
+          <div class="select-wrapper">
+            <select id="form-interest" required>
+              <option value="" disabled selected>Bitte wählen</option>
+              <option value="Immobilienkauf">Immobilienfinanzierung</option>
+              <option value="Anschlussfinanzierung">Anschlussfinanzierung</option>
+              <option value="Modernisierung">Modernisierung</option>
+              <option value="Neubau">Neubau</option>
+              <option value="Allgemeine Beratung">Allgemeine Beratung</option>
+            </select>
+          </div>
+        </div>
+      </div>
       <div class="form-group">
-        <label>Ihre Nachricht <span class="optional">(optional)</span></label>
-        <textarea id="form-message" rows="3" placeholder="z.B. Ich suche eine Wohnung in München und möchte mich über Finanzierungsmöglichkeiten informieren."></textarea>
+        <label>Ihre Nachricht <strong>*</strong></label>
+        <textarea id="form-message" rows="4" placeholder="Beschreiben Sie kurz Ihr Anliegen …" required></textarea>
       </div>
       <div class="dsgvo-notice">
         Ihre Daten werden gemäß der Datenschutzgrundverordnung (DSGVO) verarbeitet und nicht an Dritte verkauft. Weitere Informationen finden Sie in unserer <a href="#">Datenschutzerklärung</a>.
@@ -1261,9 +1290,11 @@
         dvInterest.selectedIndex = 0;
         dvSource.value = 'call';
       } else if (src === 'form') {
-        var formName = document.getElementById('form-name');
+        var formVorname = document.getElementById('form-vorname');
+        var formNachname = document.getElementById('form-nachname');
+        var fullName = ((formVorname ? formVorname.value : '') + ' ' + (formNachname ? formNachname.value : '')).trim();
         var formInterest = document.getElementById('form-interest');
-        dvName.value = formName ? formName.value : '';
+        dvName.value = fullName;
         dvProperty.value = '';
         if (formInterest && formInterest.value) {
           for (var i = 0; i < dvInterest.options.length; i++) {
