@@ -788,58 +788,53 @@
 
     <div class="form-card" style="margin-top:1.5rem;">
       <div class="form-group">
-        <label>Anrede</label>
+        <label>Ihr Finanzierungsvorhaben <strong>*</strong></label>
         <div class="select-wrapper">
-          <select id="form-anrede">
+          <select id="form-interest" required>
             <option value="" disabled selected>Bitte wählen</option>
-            <option value="Herr">Herr</option>
-            <option value="Frau">Frau</option>
-            <option value="Divers">Divers</option>
+            <option value="Immobilienkauf">Immobilienfinanzierung</option>
+            <option value="Anschlussfinanzierung">Anschlussfinanzierung</option>
+            <option value="Modernisierung">Modernisierung</option>
+            <option value="Neubau">Neubau</option>
+            <option value="Allgemeine Beratung">Allgemeine Beratung</option>
           </select>
         </div>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Vorname <strong>*</strong></label>
-          <input type="text" id="form-vorname" placeholder="Max" required>
-        </div>
-        <div class="form-group">
-          <label>Nachname <strong>*</strong></label>
-          <input type="text" id="form-nachname" placeholder="Mustermann" required>
-        </div>
+      <div class="form-group">
+        <label>Vor- und Nachname <strong>*</strong></label>
+        <input type="text" id="form-name" placeholder="Max Mustermann" required>
+      </div>
+      <div class="form-group">
+        <label>E-Mail-Adresse <strong>*</strong></label>
+        <input type="email" id="form-email" placeholder="max@beispiel.de" required>
       </div>
       <div class="form-row">
         <div class="form-group">
-          <label>E-Mail-Adresse <strong>*</strong></label>
-          <input type="email" id="form-email" placeholder="max@beispiel.de" required>
+          <label>Vorwahl</label>
+          <input type="text" id="form-vorwahl" placeholder="+49" value="+49" maxlength="4">
         </div>
         <div class="form-group">
-          <label>Telefonnummer <span class="optional">(optional)</span></label>
-          <input type="tel" id="form-phone" placeholder="+49 170 1234567">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Postleitzahl <span class="optional">(optional)</span></label>
-          <input type="text" id="form-plz" placeholder="80331" inputmode="numeric" maxlength="5">
-        </div>
-        <div class="form-group">
-          <label>Ich interessiere mich für <strong>*</strong></label>
-          <div class="select-wrapper">
-            <select id="form-interest" required>
-              <option value="" disabled selected>Bitte wählen</option>
-              <option value="Immobilienkauf">Immobilienfinanzierung</option>
-              <option value="Anschlussfinanzierung">Anschlussfinanzierung</option>
-              <option value="Modernisierung">Modernisierung</option>
-              <option value="Neubau">Neubau</option>
-              <option value="Allgemeine Beratung">Allgemeine Beratung</option>
-            </select>
-          </div>
+          <label>Rufnummer <span class="optional">(optional)</span></label>
+          <input type="tel" id="form-phone" placeholder="170 1234567">
         </div>
       </div>
       <div class="form-group">
-        <label>Ihre Nachricht <strong>*</strong></label>
-        <textarea id="form-message" rows="4" placeholder="Beschreiben Sie kurz Ihr Anliegen …" required></textarea>
+        <label>Wie ist Ihr Beschäftigungsverhältnis?</label>
+        <div class="select-wrapper">
+          <select id="form-employment">
+            <option value="" disabled selected>Bitte wählen</option>
+            <option value="Angestellter">Angestellte/r</option>
+            <option value="Beamter">Beamte/r</option>
+            <option value="Selbstständiger">Selbstständig</option>
+            <option value="Freiberufler">Freiberufler/in</option>
+            <option value="Rentner">Rentner/in</option>
+            <option value="Sonstiges">Sonstiges</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Ihre Nachricht</label>
+        <textarea id="form-message" rows="4" placeholder="Beschreiben Sie kurz Ihr Anliegen …"></textarea>
       </div>
       <div class="dsgvo-notice">
         Ihre Daten werden gemäß der Datenschutzgrundverordnung (DSGVO) verarbeitet und nicht an Dritte verkauft. Weitere Informationen finden Sie in unserer <a href="#">Datenschutzerklärung</a>.
@@ -1079,6 +1074,20 @@
       <div class="form-row">
         <div class="form-group"><label>Immobilienadresse <span class="optional">(falls bekannt)</span></label><input type="text" id="dv-property" placeholder="z.B. Musterstraße 12, 80331 München"></div>
         <div class="form-group">
+          <label>Beschäftigung <span class="optional">(falls bekannt)</span></label>
+          <div class="select-wrapper"><select id="dv-employment">
+            <option value="">— nicht bekannt —</option>
+            <option value="Angestellter">Angestellte/r</option>
+            <option value="Beamter">Beamte/r</option>
+            <option value="Selbstständiger">Selbstständig</option>
+            <option value="Freiberufler">Freiberufler/in</option>
+            <option value="Rentner">Rentner/in</option>
+            <option value="Sonstiges">Sonstiges</option>
+          </select></div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
           <label>Quelle</label>
           <div class="select-wrapper"><select id="dv-source">
             <option value="self-onboard">Self-Onboarding</option>
@@ -1086,6 +1095,7 @@
             <option value="call">Call Center (0800)</option>
           </select></div>
         </div>
+        <div class="form-group"><label>Nachricht <span class="optional">(Kontext)</span></label><input type="text" id="dv-message" placeholder="Freitext vom Formular"></div>
       </div>
       <div class="form-row-3">
         <div class="form-group"><label>Markenname</label><input type="text" id="dv-brand_name" value="Baufi24"></div>
@@ -1220,6 +1230,8 @@
       name: document.getElementById('dv-name').value || '',
       interest_type: document.getElementById('dv-interest_type').value || '',
       property: document.getElementById('dv-property').value || '',
+      employment: document.getElementById('dv-employment').value || '',
+      message: document.getElementById('dv-message').value || '',
       source: document.getElementById('dv-source').value || ''
     };
     var agentId = document.getElementById('dv-agent_id').value;
@@ -1280,6 +1292,8 @@
       var dvName = document.getElementById('dv-name');
       var dvInterest = document.getElementById('dv-interest_type');
       var dvProperty = document.getElementById('dv-property');
+      var dvEmployment = document.getElementById('dv-employment');
+      var dvMessage = document.getElementById('dv-message');
       var dvSource = document.getElementById('dv-source');
 
       var src = source || currentSource || 'call';
@@ -1287,15 +1301,25 @@
       if (src === 'call') {
         dvName.value = '';
         dvProperty.value = '';
+        dvEmployment.selectedIndex = 0;
+        dvMessage.value = '';
         dvInterest.selectedIndex = 0;
         dvSource.value = 'call';
       } else if (src === 'form') {
-        var formVorname = document.getElementById('form-vorname');
-        var formNachname = document.getElementById('form-nachname');
-        var fullName = ((formVorname ? formVorname.value : '') + ' ' + (formNachname ? formNachname.value : '')).trim();
+        var formName = document.getElementById('form-name');
         var formInterest = document.getElementById('form-interest');
-        dvName.value = fullName;
+        var formEmployment = document.getElementById('form-employment');
+        var formMessage = document.getElementById('form-message');
+        dvName.value = formName ? formName.value.trim() : '';
         dvProperty.value = '';
+        if (formEmployment && formEmployment.value) {
+          for (var e = 0; e < dvEmployment.options.length; e++) {
+            if (dvEmployment.options[e].value === formEmployment.value) { dvEmployment.selectedIndex = e; break; }
+          }
+        } else {
+          dvEmployment.selectedIndex = 0;
+        }
+        dvMessage.value = formMessage ? formMessage.value.trim() : '';
         if (formInterest && formInterest.value) {
           for (var i = 0; i < dvInterest.options.length; i++) {
             if (dvInterest.options[i].value === formInterest.value) { dvInterest.selectedIndex = i; break; }
@@ -1309,6 +1333,8 @@
         if (wizAddr && wizAddr.value.trim()) {
           dvProperty.value = wizAddr.value.trim();
         }
+        dvEmployment.selectedIndex = 0;
+        dvMessage.value = '';
         var selectedTile = document.querySelector('#page-self-onboard .wizard-step[data-step="0"] .option-tile.selected');
         if (selectedTile && selectedTile.dataset.interest) {
           for (var j = 0; j < dvInterest.options.length; j++) {
