@@ -253,25 +253,16 @@
       line-height: 1.6;
     }
 
-    .address-bar {
-      background: var(--mint);
-      color: var(--dark-blue);
-      text-align: center;
-      padding: 0.75rem 1.5rem;
-      font-size: 0.9375rem;
-      font-weight: 500;
-    }
-
     .cards-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 1.5rem;
       margin-top: 2.5rem;
-      max-width: 720px;
+      max-width: 1080px;
       margin-left: auto;
       margin-right: auto;
     }
-    @media (max-width: 640px) {
+    @media (max-width: 900px) {
       .cards-grid { grid-template-columns: 1fr; max-width: 480px; }
     }
 
@@ -718,8 +709,8 @@
 </head>
 <body>
 
-<!-- ================ PAGE 1: WELCOME ================ -->
-<div class="page active" id="page-welcome">
+<!-- ================ PAGE 1: CHOOSE YOUR ENTRY POINT ================ -->
+<div class="page active" id="page-choose-path">
   <header class="header">
     <div class="header-logo">Baufi<span>24</span></div>
     <a href="tel:08008084000" class="header-phone">
@@ -730,28 +721,47 @@
 
   <section class="hero">
     <h1>Ihre Baufinanzierung — einfach, transparent, unverbindlich</h1>
-    <p>Geben Sie die Adresse Ihrer Wunschimmobilie ein und erfahren Sie sofort den geschätzten Marktwert. Dann entscheiden Sie, wie Sie weitermachen möchten.</p>
+    <p>Wählen Sie, wie Sie zu uns gekommen sind — so können wir Sie optimal weiterleiten.</p>
   </section>
 
-  <div class="form-section">
-    <div class="form-card">
-      <div class="form-group">
-        <label>Adresse der Immobilie <span class="optional">(optional)</span></label>
-        <input type="text" id="address-input" placeholder="z.B. Musterstraße 12, 80331 München">
-      </div>
-      <div class="form-group">
-        <label>Was interessiert Sie?</label>
-        <div class="select-wrapper">
-          <select id="interest-select">
-            <option value="" disabled selected>Bitte wählen</option>
-            <option value="purchase">Immobilienkauf</option>
-            <option value="refinancing">Anschlussfinanzierung</option>
-            <option value="renovation">Modernisierung</option>
-            <option value="general">Allgemeine Beratung</option>
-          </select>
+  <div class="choose-section">
+    <div class="cards-grid">
+      <!-- Card A: 0800 Call Center -->
+      <div class="path-card" onclick="goToPage('ai-assistant', 'call')">
+        <span class="card-badge">Sofort verbunden</span>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
         </div>
+        <h3>Telefonische Beratung (0800)</h3>
+        <p class="card-desc">Sie haben unsere Hotline angerufen? Unser KI-Assistent übernimmt sofort — keine Warteschleife, sofortige Hilfe.</p>
+        <p class="card-sub">Anruf-Simulation · Minimale Daten</p>
+        <button class="btn-primary" onclick="event.stopPropagation(); goToPage('ai-assistant', 'call')">KI-Gespräch starten →</button>
       </div>
-      <button class="btn-primary" onclick="goToPage('choose-path')">Weiter →</button>
+
+      <!-- Card B: Generic Contact Form -->
+      <div class="path-card" onclick="goToPage('form-entry')">
+        <span class="card-badge">Kontakt</span>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <h3>Kontaktformular</h3>
+        <p class="card-desc">Sie haben uns über das Website-Formular kontaktiert? Teilen Sie uns Ihr Anliegen mit und sprechen Sie anschließend mit unserem KI-Assistenten.</p>
+        <p class="card-sub">Name · Interesse · Nachricht</p>
+        <button class="btn-primary" onclick="event.stopPropagation(); goToPage('form-entry')">Formular ausfüllen →</button>
+      </div>
+
+      <!-- Card C: Self-Onboarding -->
+      <div class="path-card" onclick="goToPage('self-onboard')">
+        <span class="card-badge">Schnell & einfach</span>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <h3>Online-Antrag starten</h3>
+        <p class="card-desc">Beantworten Sie ein paar kurze Fragen und erhalten Sie ein unverbindliches Finanzierungsangebot — plus ein persönliches Immobilien-Portal als Bonus.</p>
+        <p class="card-sub">6 Schritte · Kein Gespräch nötig</p>
+        <button class="btn-primary" onclick="event.stopPropagation(); goToPage('self-onboard')">Angebot anfordern →</button>
+      </div>
+
     </div>
   </div>
 
@@ -760,8 +770,8 @@
   </div>
 </div>
 
-<!-- ================ PAGE 2: CHOOSE YOUR PATH ================ -->
-<div class="page" id="page-choose-path">
+<!-- ================ PAGE 2B: GENERIC CONTACT FORM ================ -->
+<div class="page" id="page-form-entry">
   <header class="header">
     <div class="header-logo">Baufi<span>24</span></div>
     <a href="tel:08008084000" class="header-phone">
@@ -770,39 +780,45 @@
     </a>
   </header>
 
-  <div id="address-bar-container"></div>
+  <div class="inner-page" style="max-width:560px;">
+    <div class="page-heading">
+      <h1 style="font-size:1.75rem;">Kontaktformular</h1>
+      <p>Teilen Sie uns Ihr Anliegen mit — anschließend verbinden wir Sie mit unserem KI-Assistenten für eine sofortige Beratung.</p>
+    </div>
 
-  <div class="page-heading">
-    <h1>Wie möchten Sie beraten werden?</h1>
-    <p>Wählen Sie den Weg, der am besten zu Ihnen passt — alle Optionen sind kostenlos und unverbindlich.</p>
-  </div>
-
-  <div class="choose-section">
-    <div class="cards-grid">
-      <!-- Card A: Self-Service Quote Request -->
-      <div class="path-card" onclick="goToPage('self-onboard')">
-        <span class="card-badge">Schnell & einfach</span>
-        <div class="card-icon">
-          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-        </div>
-        <h3>Finanzierungsangebot selbst anfordern</h3>
-        <p class="card-desc">Beantworten Sie ein paar kurze Fragen und erhalten Sie ein unverbindliches Finanzierungsangebot — plus ein persönliches Immobilien-Portal als Bonus.</p>
-        <p class="card-sub">Kein Gespräch nötig — direkt loslegen</p>
-        <button class="btn-primary" onclick="event.stopPropagation(); goToPage('self-onboard')">Angebot anfordern →</button>
+    <div class="form-card" style="margin-top:1.5rem;">
+      <div class="form-group">
+        <label>Vor- und Nachname <span class="optional">(falls bekannt)</span></label>
+        <input type="text" id="form-name" placeholder="Max Mustermann">
       </div>
-
-      <!-- Card B: Vocal AI Assistant -->
-      <div class="path-card" onclick="goToPage('ai-assistant')">
-        <span class="card-badge">KI-gestützt</span>
-        <div class="card-icon">
-          <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
-        </div>
-        <h3>Mit virtuellem Assistenten sprechen</h3>
-        <p class="card-desc">Unser KI-Assistent beantwortet Ihre Fragen zur Baufinanzierung — per Sprache, direkt im Browser. Sofort verfügbar, auf Deutsch.</p>
-        <p class="card-sub">KI-gestützt · Unverbindlich · Auf Deutsch</p>
-        <button class="btn-primary" onclick="event.stopPropagation(); goToPage('ai-assistant')">Gespräch starten →</button>
+      <div class="form-group">
+        <label>E-Mail-Adresse <span class="optional">(optional)</span></label>
+        <input type="email" id="form-email" placeholder="max@beispiel.de">
       </div>
-
+      <div class="form-group">
+        <label>Was interessiert Sie?</label>
+        <div class="select-wrapper">
+          <select id="form-interest">
+            <option value="" disabled selected>Bitte wählen</option>
+            <option value="Immobilienkauf">Immobilienkauf</option>
+            <option value="Anschlussfinanzierung">Anschlussfinanzierung</option>
+            <option value="Modernisierung">Modernisierung</option>
+            <option value="Neubau">Neubau</option>
+            <option value="Allgemeine Beratung">Allgemeine Beratung</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Ihre Nachricht <span class="optional">(optional)</span></label>
+        <textarea id="form-message" rows="3" placeholder="z.B. Ich suche eine Wohnung in München und möchte mich über Finanzierungsmöglichkeiten informieren."></textarea>
+      </div>
+      <div class="dsgvo-notice">
+        Ihre Daten werden gemäß der Datenschutzgrundverordnung (DSGVO) verarbeitet und nicht an Dritte verkauft. Weitere Informationen finden Sie in unserer <a href="#">Datenschutzerklärung</a>.
+      </div>
+      <button class="btn-primary" onclick="goToPage('ai-assistant', 'form')">Weiter zum KI-Assistenten →</button>
+    </div>
+    <div class="back-link">
+      <button class="ghost-link" onclick="goToPage('choose-path')">← Zurück zur Auswahl</button>
     </div>
   </div>
 </div>
@@ -827,20 +843,26 @@
       <p class="step-counter">Schritt 1 von 6</p>
       <h2 class="wizard-question">Was möchten Sie finanzieren?</h2>
       <p class="wizard-sub">Wählen Sie Ihr Vorhaben — alle Optionen sind kostenlos und unverbindlich.</p>
+      <div class="form-card" style="margin-bottom:1.5rem; padding:1.25rem;">
+        <div class="form-group" style="margin-bottom:0;">
+          <label>Adresse der Immobilie <span class="optional">(optional)</span></label>
+          <input type="text" id="wiz-address" placeholder="z.B. Musterstraße 12, 80331 München">
+        </div>
+      </div>
       <div class="option-tiles">
-        <div class="option-tile" onclick="wizardSelect(this, 0)">
+        <div class="option-tile" data-interest="Immobilienkauf" onclick="wizardSelect(this, 0)">
           <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
           Immobilienkauf
         </div>
-        <div class="option-tile" onclick="wizardSelect(this, 0)">
+        <div class="option-tile" data-interest="Anschlussfinanzierung" onclick="wizardSelect(this, 0)">
           <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M21 12V7H5a2 2 0 010-4h14v4"/><path d="M3 5v14a2 2 0 002 2h16v-5"/><path d="M18 12a2 2 0 000 4h4v-4z"/></svg></div>
           Anschluss&shy;finanzierung
         </div>
-        <div class="option-tile" onclick="wizardSelect(this, 0)">
+        <div class="option-tile" data-interest="Modernisierung" onclick="wizardSelect(this, 0)">
           <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div>
           Modernisierung
         </div>
-        <div class="option-tile" onclick="wizardSelect(this, 0)">
+        <div class="option-tile" data-interest="Neubau" onclick="wizardSelect(this, 0)">
           <div class="tile-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
           Neubau
         </div>
@@ -987,7 +1009,7 @@
 
   </div>
 
-  <button class="ai-help-fab" onclick="goToPage('ai-assistant')">
+  <button class="ai-help-fab" onclick="goToPage('ai-assistant', 'self-onboard')">
     <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
     Hilfe? KI-Assistent
   </button>
@@ -1012,11 +1034,11 @@
     <div id="ai-vars-form" style="text-align:left; margin-bottom:1.5rem;">
       <h3 style="font-size:0.9375rem; font-weight:600; margin-bottom:1rem; color:var(--dark-blue);">Kontext <span style="font-weight:400; color:var(--dark-gray); font-size:0.8125rem;">— optional, vor dem Start anpassen</span></h3>
       <div class="form-row">
-        <div class="form-group"><label>Name <span class="optional">(falls bekannt)</span></label><input type="text" id="dv-name" placeholder="z.B. Thomas Müller"></div>
+        <div class="form-group"><label>Name <span class="optional">(falls bekannt)</span></label><input type="text" id="dv-name" value=""></div>
         <div class="form-group">
           <label>Interesse <span class="optional">(falls bekannt)</span></label>
           <div class="select-wrapper"><select id="dv-interest_type">
-            <option value="" selected>— nicht bekannt —</option>
+            <option value="">— nicht bekannt —</option>
             <option value="Immobilienkauf">Immobilienkauf</option>
             <option value="Anschlussfinanzierung">Anschlussfinanzierung</option>
             <option value="Modernisierung">Modernisierung</option>
@@ -1030,7 +1052,7 @@
         <div class="form-group">
           <label>Quelle</label>
           <div class="select-wrapper"><select id="dv-source">
-            <option value="self-onboard" selected>Self-Onboarding</option>
+            <option value="self-onboard">Self-Onboarding</option>
             <option value="form">Kontaktformular</option>
             <option value="call">Call Center (0800)</option>
           </select></div>
@@ -1050,8 +1072,7 @@
 
     <div id="ai-widget-container" style="margin:1.5rem 0;"></div>
 
-    <div class="back-link" style="margin-top:1rem;"><button class="ghost-link" onclick="goToPage('self-onboard')">← Zurück zum Online-Antrag</button></div>
-    <div class="back-link" style="margin-top:0.5rem;"><button class="ghost-link" onclick="goToPage('choose-path')" style="font-size:0.8125rem; color:var(--dark-gray);">← Zurück zur Auswahl</button></div>
+    <div class="back-link" style="margin-top:1rem;"><button class="ghost-link" onclick="goToPage('choose-path')">← Zurück zur Auswahl</button></div>
   </div>
 </div>
 
@@ -1181,17 +1202,9 @@
     document.getElementById('launch-agent-btn').style.display = 'none';
   }
 
-  function goToPage(pageId) {
-    if (pageId === 'choose-path') {
-      var address = document.getElementById('address-input').value;
-      var container = document.getElementById('address-bar-container');
-      if (address.trim()) {
-        container.innerHTML = '<div class="address-bar">Ihre Immobilie: ' + address + '</div>';
-      } else {
-        container.innerHTML = '';
-      }
-    }
+  var currentSource = '';
 
+  function goToPage(pageId, source) {
     if (pageId === 'self-onboard') {
       wizardCurrentStep = 0;
       renderWizard();
@@ -1201,22 +1214,48 @@
       document.getElementById('ai-widget-container').innerHTML = '';
       document.getElementById('ai-vars-form').style.display = '';
       document.getElementById('launch-agent-btn').style.display = '';
-      var addrInput = document.getElementById('address-input');
-      if (addrInput && addrInput.value.trim()) {
-        document.getElementById('dv-property').value = addrInput.value.trim();
-      }
-      var interestSelect = document.getElementById('interest-select');
-      if (interestSelect && interestSelect.value) {
-        var interestMap = { purchase: 'Immobilienkauf', refinancing: 'Anschlussfinanzierung', renovation: 'Modernisierung', general: 'Allgemeine Beratung' };
-        var mapped = interestMap[interestSelect.value];
-        if (mapped) {
-          var dvInterest = document.getElementById('dv-interest_type');
+
+      var dvName = document.getElementById('dv-name');
+      var dvInterest = document.getElementById('dv-interest_type');
+      var dvProperty = document.getElementById('dv-property');
+      var dvSource = document.getElementById('dv-source');
+
+      var src = source || currentSource || 'call';
+
+      if (src === 'call') {
+        dvName.value = '';
+        dvProperty.value = '';
+        dvInterest.selectedIndex = 0;
+        dvSource.value = 'call';
+      } else if (src === 'form') {
+        var formName = document.getElementById('form-name');
+        var formInterest = document.getElementById('form-interest');
+        dvName.value = formName ? formName.value : '';
+        dvProperty.value = '';
+        if (formInterest && formInterest.value) {
           for (var i = 0; i < dvInterest.options.length; i++) {
-            if (dvInterest.options[i].value === mapped) { dvInterest.selectedIndex = i; break; }
+            if (dvInterest.options[i].value === formInterest.value) { dvInterest.selectedIndex = i; break; }
           }
+        } else {
+          dvInterest.selectedIndex = 0;
         }
+        dvSource.value = 'form';
+      } else if (src === 'self-onboard') {
+        var wizAddr = document.getElementById('wiz-address');
+        if (wizAddr && wizAddr.value.trim()) {
+          dvProperty.value = wizAddr.value.trim();
+        }
+        var selectedTile = document.querySelector('#page-self-onboard .wizard-step[data-step="0"] .option-tile.selected');
+        if (selectedTile && selectedTile.dataset.interest) {
+          for (var j = 0; j < dvInterest.options.length; j++) {
+            if (dvInterest.options[j].value === selectedTile.dataset.interest) { dvInterest.selectedIndex = j; break; }
+          }
+        } else {
+          dvInterest.selectedIndex = 1;
+        }
+        dvSource.value = 'self-onboard';
       }
-      document.getElementById('dv-source').value = 'self-onboard';
+      currentSource = src;
     }
 
     document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
@@ -1287,10 +1326,6 @@
       document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
       var target = document.getElementById('page-' + page);
       if (target) target.classList.add('active');
-      if (page === 'choose-path' || page === 'self-onboard' || page === 'ai-assistant' || page === 'human-advisor') {
-        var container = document.getElementById('address-bar-container');
-        if (container) container.innerHTML = '<div class="address-bar">Ihre Immobilie: Musterstraße 12, 80331 München</div>';
-      }
     }
   })();
 </script>
