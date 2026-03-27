@@ -1009,7 +1009,7 @@
 
   </div>
 
-  <button class="ai-help-fab" onclick="goToPage('ai-assistant', 'self-onboard')">
+  <button class="ai-help-fab" id="self-onboard-fab" onclick="launchAgentFromWizard()">
     <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
     Hilfe? KI-Assistent
   </button>
@@ -1202,12 +1202,45 @@
     document.getElementById('launch-agent-btn').style.display = 'none';
   }
 
+  function launchAgentFromWizard() {
+    var wizAddr = document.getElementById('wiz-address');
+    var selectedTile = document.querySelector('#page-self-onboard .wizard-step[data-step="0"] .option-tile.selected');
+    var interest = '';
+    if (selectedTile && selectedTile.dataset.interest) {
+      interest = selectedTile.dataset.interest;
+    }
+    var vars = {
+      brand_name: 'Baufi24',
+      ai_agent_name: 'Mia',
+      name: '',
+      interest_type: interest,
+      property: (wizAddr && wizAddr.value.trim()) ? wizAddr.value.trim() : '',
+      source: 'self-onboard'
+    };
+    var agentId = 'agent_8101kmdjapcrf9ttb2jb3q922wq4';
+    var firstMsg = 'Hallo! Wie kann ich Ihnen helfen?';
+    var existing = document.querySelector('#page-self-onboard elevenlabs-convai');
+    if (existing) existing.remove();
+    var widget = document.createElement('elevenlabs-convai');
+    widget.setAttribute('agent-id', agentId);
+    widget.setAttribute('server-location', 'eu-residency');
+    widget.setAttribute('language', 'de');
+    widget.setAttribute('first-message', firstMsg);
+    widget.setAttribute('dynamic-variables', JSON.stringify(vars));
+    document.getElementById('page-self-onboard').appendChild(widget);
+    document.getElementById('self-onboard-fab').style.display = 'none';
+  }
+
   var currentSource = '';
 
   function goToPage(pageId, source) {
     if (pageId === 'self-onboard') {
       wizardCurrentStep = 0;
       renderWizard();
+      var existingWidget = document.querySelector('#page-self-onboard elevenlabs-convai');
+      if (existingWidget) existingWidget.remove();
+      var fab = document.getElementById('self-onboard-fab');
+      if (fab) fab.style.display = '';
     }
 
     if (pageId === 'ai-assistant') {
