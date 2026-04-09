@@ -677,6 +677,172 @@
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; }
 
+    /* Kontakt page layout */
+    .kontakt-body {
+      max-width: 760px;
+      margin: -2.5rem auto 0;
+      padding: 0 1.5rem 3rem;
+      position: relative;
+      z-index: 1;
+    }
+    .kontakt-form-card {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 2.5rem 2rem 2rem;
+      box-shadow: 0 4px 24px rgba(0, 44, 74, 0.10);
+      margin-bottom: 3rem;
+    }
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .checkbox-group input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      min-width: 20px;
+      margin-top: 2px;
+      accent-color: var(--dark-blue);
+      cursor: pointer;
+    }
+    .checkbox-group label {
+      font-size: 0.8125rem;
+      color: var(--dark-blue);
+      line-height: 1.5;
+      cursor: pointer;
+    }
+    .checkbox-group label a {
+      color: var(--rain);
+      text-decoration: underline;
+    }
+
+    /* Contact options 2x2 grid */
+    .contact-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    @media (max-width: 560px) {
+      .contact-options { grid-template-columns: 1fr; }
+    }
+    .contact-option {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .contact-option-icon {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      background: var(--soft);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .contact-option-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--dark-blue);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .contact-option h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    .contact-option p {
+      font-size: 0.875rem;
+      color: var(--dark-gray);
+      line-height: 1.5;
+    }
+    .contact-option a {
+      color: var(--rain);
+      font-weight: 500;
+      text-decoration: none;
+      font-size: 0.875rem;
+    }
+    .contact-option a:hover { text-decoration: underline; }
+
+    /* Beratungstermin info box */
+    .beratung-box {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 2.5rem;
+      border: 1px solid var(--clouds);
+    }
+    .beratung-box h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .beratung-box p {
+      font-size: 0.875rem;
+      color: var(--dark-gray);
+      line-height: 1.6;
+    }
+
+    /* Trust badges strip */
+    .trust-badges {
+      text-align: center;
+      padding: 2rem 1rem;
+      background: var(--white);
+      border-radius: 12px;
+      border: 1px solid var(--clouds);
+    }
+    .trust-badges p {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--dark-blue);
+    }
+    .trust-badges .badge-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .badge-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8125rem;
+      color: var(--dark-gray);
+      font-weight: 500;
+    }
+    .badge-item .badge-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--mint);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .badge-item .badge-icon svg {
+      width: 20px;
+      height: 20px;
+      stroke: var(--dark-blue);
+      fill: none;
+      stroke-width: 2;
+    }
+
+    /* AI widget section within kontakt */
+    .kontakt-ai-section {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 24px rgba(0, 44, 74, 0.10);
+      margin-bottom: 2rem;
+    }
+
     /* Touch targets & focus */
     .btn-primary, .btn-secondary { min-height: 44px; }
     .ghost-link { min-height: 44px; display: inline-flex; align-items: center; }
@@ -796,7 +962,7 @@
   </div>
 </div>
 
-<!-- ================ PAGE 2B: GENERIC CONTACT FORM ================ -->
+<!-- ================ PAGE 2B: KONTAKT (matches baufi24.de/kontakt/) ================ -->
 <div class="page" id="page-form-entry">
   <header class="header">
     <div class="header-logo">Baufi<span>24</span></div>
@@ -806,13 +972,16 @@
     </a>
   </header>
 
-  <div class="inner-page" style="max-width:560px;">
-    <div class="page-heading">
-      <h1 style="font-size:1.75rem;">Wie können wir Ihnen helfen?</h1>
-      <p>Füllen Sie das Kontaktformular aus — anschließend verbinden wir Sie mit unserem KI-Assistenten für eine sofortige Beratung. Alle mit <strong>*</strong> gekennzeichneten Felder sind Pflichtfelder.</p>
-    </div>
+  <section class="hero">
+    <p style="color:var(--sea); font-size:0.875rem; margin-bottom:0.75rem;">Home / Kontakt</p>
+    <h1>Wie können wir dir helfen?</h1>
+    <p>Egal, ob du allgemeine Fragen rund um deine Finanzierung hast oder bereits ein konkretes Angebot willst: Wir beraten dich gern. Alle mit * gekennzeichneten Felder sind Pflichtfelder.</p>
+  </section>
 
-    <div class="form-card" style="margin-top:1.5rem;">
+  <div class="kontakt-body">
+
+    <!-- Form Card -->
+    <div class="kontakt-form-card" id="kontakt-form-card">
       <div class="form-group">
         <label>Ihr Finanzierungsvorhaben <strong>*</strong></label>
         <div class="select-wrapper">
@@ -830,10 +999,6 @@
         <label>Vor- und Nachname <strong>*</strong></label>
         <input type="text" id="form-name" placeholder="Max Mustermann" required>
       </div>
-      <div class="form-group">
-        <label>E-Mail-Adresse <strong>*</strong></label>
-        <input type="email" id="form-email" placeholder="max@beispiel.de" required>
-      </div>
       <div class="form-row">
         <div class="form-group">
           <label>Vorwahl</label>
@@ -845,7 +1010,7 @@
         </div>
       </div>
       <div class="form-group">
-        <label>Wie ist Ihr Beschäftigungsverhältnis?</label>
+        <label>Wie ist dein Beschäftigungsverhältnis?</label>
         <div class="select-wrapper">
           <select id="form-employment">
             <option value="" disabled selected>Bitte wählen</option>
@@ -859,24 +1024,107 @@
         </div>
       </div>
       <div class="form-group">
-        <label>Ihre Nachricht</label>
-        <textarea id="form-message" rows="4" placeholder="Beschreiben Sie kurz Ihr Anliegen …"></textarea>
+        <label>Deine Nachricht <span class="optional">(optional)</span></label>
+        <textarea id="form-message" rows="3" placeholder="Beschreibe kurz dein Anliegen …"></textarea>
       </div>
-      <div class="dsgvo-notice">
-        Ihre Daten werden gemäß der Datenschutzgrundverordnung (DSGVO) verarbeitet und nicht an Dritte verkauft. Weitere Informationen finden Sie in unserer <a href="#">Datenschutzerklärung</a>.
+
+      <div class="checkbox-group">
+        <input type="checkbox" id="form-dsgvo" checked>
+        <label for="form-dsgvo">Ich bin damit einverstanden, dass die Baufi24 GmbH meine Daten zur Kontaktaufnahme sowie Beratung nutzt. Die Daten werden gemäß der <a href="https://www.baufi24.de/datenschutz/" target="_blank">Datenschutzerklärung</a> verarbeitet und nicht an Dritte verkauft.</label>
       </div>
-      <button class="btn-primary" id="form-launch-agent-btn" onclick="launchAgentFromForm()">Weiter zum KI-Assistenten →</button>
+      <div class="checkbox-group" style="margin-bottom:1.5rem;">
+        <input type="checkbox" id="form-newsletter">
+        <label for="form-newsletter">Ich möchte per E-Mail über aktuelle Zinsen, Tipps &amp; Angebote informiert werden. Abmeldung jederzeit möglich.</label>
+      </div>
+
+      <button class="btn-primary" id="form-launch-agent-btn" onclick="launchAgentFromForm()">Absenden →</button>
     </div>
 
-    <div id="form-ai-section" style="display:none; margin-top:1.5rem;">
-      <div class="ai-disclosure" style="text-align:left;">
-        <strong>Hinweis:</strong> Sie sprechen mit einem KI-gestützten Assistenten, nicht mit einem Menschen. Ihre Daten werden gemäß DSGVO geschützt.
+    <!-- AI Widget Section (appears after form submit) -->
+    <div id="form-ai-section" style="display:none;">
+      <div class="kontakt-ai-section">
+        <div class="ai-disclosure" style="margin-bottom:1rem;">
+          <strong>Hinweis:</strong> Sie sprechen jetzt mit einem KI-gestützten Assistenten von Baufi24, nicht mit einem Menschen. Ihre Daten werden gemäß DSGVO geschützt.
+        </div>
+        <p style="font-size:0.9375rem; color:var(--dark-gray); margin-bottom:1.25rem;">Stellen Sie Ihre Fragen — z.B.: <em>„Was ist eine Anschlussfinanzierung?"</em>, <em>„Wie viel Eigenkapital brauche ich?"</em> oder <em>„Welche Unterlagen benötige ich?"</em></p>
+        <div id="form-ai-widget-container"></div>
       </div>
-      <p style="font-size:0.9375rem; color:var(--dark-gray); margin-bottom:1rem; text-align:left;">Fragen Sie z.B.: <em>„Was ist eine Anschlussfinanzierung?"</em>, <em>„Wie viel Eigenkapital brauche ich?"</em> oder <em>„Welche Unterlagen benötige ich?"</em></p>
-      <div id="form-ai-widget-container"></div>
     </div>
 
-    <div class="back-link">
+    <!-- Contact Options Grid (matches baufi24.de/kontakt/) -->
+    <div class="contact-options">
+      <div class="contact-option">
+        <div class="contact-option-icon">
+          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
+        </div>
+        <div>
+          <h3>Ich möchte ein Angebot</h3>
+          <p>Mit wenigen Klicks &amp; Angaben zu deinem unverbindlichen Angebot:</p>
+          <a href="https://www.baufi24.de/angebot-anfordern/" target="_blank">Jetzt kostenlos anfordern.</a>
+        </div>
+      </div>
+      <div class="contact-option">
+        <div class="contact-option-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <div>
+          <h3>Unsere Standorte</h3>
+          <p>Persönliche Beratung in deiner Nähe.</p>
+          <a href="https://www.baufi24.de/standorte/" target="_blank">Hier findest du alle unsere Standorte</a>
+        </div>
+      </div>
+      <div class="contact-option">
+        <div class="contact-option-icon">
+          <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <div>
+          <h3>E-Mail schreiben</h3>
+          <p>Einfach Kontaktformular ausfüllen und wir melden uns bei dir:</p>
+          <a href="#" onclick="document.getElementById('kontakt-form-card').scrollIntoView({behavior:'smooth'}); return false;">Jetzt schreiben.</a>
+        </div>
+      </div>
+      <div class="contact-option">
+        <div class="contact-option-icon">
+          <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        </div>
+        <div>
+          <h3>Ruf uns an</h3>
+          <p>Anrufen und Wunschtermin zur Beratung vereinbaren:</p>
+          <a href="tel:08008084000">0800 / 808 4000*</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Beratungstermin -->
+    <div class="beratung-box">
+      <h3>* Dein Beratungstermin</h3>
+      <p>Um dich individuell zu beraten, möchten wir uns Zeit nehmen. Ruf uns an und mach einen Wunschtermin für eine persönliche Beratung aus. Anrufe sind deutschlandweit kostenfrei. Wir sind für dich erreichbar von Montag bis Freitag von 8:00 bis 18:00 Uhr.</p>
+    </div>
+
+    <!-- Trust Badges -->
+    <div class="trust-badges">
+      <p>Top bewertet und vielfach ausgezeichnet</p>
+      <div class="badge-row">
+        <div class="badge-item">
+          <div class="badge-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+          Trustpilot
+        </div>
+        <div class="badge-item">
+          <div class="badge-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          TÜV Preis-Leistung
+        </div>
+        <div class="badge-item">
+          <div class="badge-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg></div>
+          Top Vermittler
+        </div>
+        <div class="badge-item">
+          <div class="badge-icon"><svg viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 010-5C7 4 9 7 12 7s5-3 7.5-3a2.5 2.5 0 010 5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0012 0V2z"/></svg></div>
+          Preis-Champions
+        </div>
+      </div>
+    </div>
+
+    <div class="back-link" style="margin-top:2rem;">
       <button class="ghost-link" onclick="goToPage('choose-path')">← Zurück zur Auswahl</button>
     </div>
   </div>
@@ -1298,9 +1546,17 @@
     var firstMsg = customerName ? ('Hallo ' + customerName + '!') : 'Hallo! Wie kann ich Ihnen helfen?';
     var container = document.getElementById('form-ai-widget-container');
     container.innerHTML = '<elevenlabs-convai agent-id="' + agentId + '" server-location="eu-residency" language="de" first-message="' + firstMsg.replace(/"/g, '&quot;') + '" dynamic-variables=\'' + JSON.stringify(vars) + '\'></elevenlabs-convai>';
+
+    var formCard = document.getElementById('kontakt-form-card');
+    if (formCard) {
+      formCard.style.opacity = '0.5';
+      formCard.style.pointerEvents = 'none';
+    }
     document.getElementById('form-ai-section').style.display = '';
     document.getElementById('form-launch-agent-btn').style.display = 'none';
-    document.getElementById('form-ai-section').scrollIntoView({ behavior: 'smooth' });
+    setTimeout(function() {
+      document.getElementById('form-ai-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
   }
 
   function launchAgentFromWizard() {
@@ -1351,6 +1607,8 @@
       if (formWidgetContainer) { formWidgetContainer.innerHTML = ''; }
       var formLaunchBtn = document.getElementById('form-launch-agent-btn');
       if (formLaunchBtn) { formLaunchBtn.style.display = ''; }
+      var formCard = document.getElementById('kontakt-form-card');
+      if (formCard) { formCard.style.opacity = ''; formCard.style.pointerEvents = ''; }
     }
 
     if (pageId === 'ai-assistant') {
