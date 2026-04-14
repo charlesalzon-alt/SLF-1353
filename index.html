@@ -1,556 +1,1751 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MoneyPark — Your Mortgage Journey</title>
+  <title>Baufi24 — Mein Weg zur Finanzierung</title>
+  <meta name="theme-color" content="#002c4a">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
   <style>
     :root {
-      --mp-teal: #008060;
-      --mp-teal-hover: #006B50;
-      --mp-teal-light: #E6F5F0;
-      --mp-dark: #1A1A1A;
-      --mp-dark-hover: #333333;
-      --mp-text: #2C2C2C;
-      --mp-soft: #F7F7F7;
-      --mp-clouds: #E5E5E5;
-      --mp-sea: #A0A0A0;
-      --mp-white: #ffffff;
-      --mp-gray: #6B6B6B;
-      --mp-mid-gray: #C2C2C2;
+      --dark-blue: #002c4a;
+      --blue: #103858;
+      --dark-blue-hover: #23577a;
+      --rain: #224e77;
+      --mint: #ccffcc;
+      --dark-mint: #abe0ab;
+      --leaf: #64ca54;
+      --soft: #f2f5f8;
+      --clouds: #e2e8ec;
+      --sea: #aebecb;
+      --white: #ffffff;
+      --dark-gray: #868686;
+      --middle-gray: #c2c2c2;
+      --red: #ff0000;
     }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { overflow-x: hidden; }
-    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; color: var(--mp-dark); background: var(--mp-soft); min-height: 100vh; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--dark-blue);
+      background: var(--soft);
+      min-height: 100vh;
+    }
+
     .page { display: none; min-height: 100vh; }
     .page.active { display: block; }
 
     /* Header */
-    .header { background: var(--mp-white); padding: 0.875rem 2rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--mp-clouds); }
-    .header-brand { display: flex; align-items: center; gap: 1rem; }
-    .header-logo { font-size: 1.25rem; font-weight: 700; color: var(--mp-dark); letter-spacing: 2px; text-transform: uppercase; display: flex; align-items: center; gap: 0.35rem; }
-    .header-logo .logo-icon { width: 20px; height: 20px; fill: var(--mp-dark); }
-    .header-helvetia { font-size: 0.6875rem; color: var(--mp-gray); border-left: 1px solid var(--mp-clouds); padding-left: 1rem; line-height: 1.3; letter-spacing: 0.3px; }
-    .header-right { display: flex; align-items: center; gap: 1.25rem; }
-    .header-phone { color: var(--mp-dark); text-decoration: none; font-size: 0.9375rem; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap; }
-    .header-phone:hover { color: var(--mp-teal); }
-    .phone-icon { width: 18px; height: 18px; fill: currentColor; }
+    .header {
+      background: var(--dark-blue);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header-logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--mint);
+      letter-spacing: -0.5px;
+    }
+    .header-logo span { color: var(--white); font-weight: 400; }
+    .header-phone {
+      color: var(--white);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .header-phone:hover { color: var(--mint); }
+    .header-phone { white-space: nowrap; }
+    .phone-icon {
+      width: 18px; height: 18px;
+      fill: currentColor;
+    }
 
-    /* Consent Modal */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(26,26,46,0.6); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 1rem; }
-    .modal-overlay.hidden { display: none; }
-    .modal-card { background: var(--mp-white); border-radius: 12px; max-width: 520px; width: 100%; padding: 2.5rem 2rem; box-shadow: 0 8px 32px rgba(0,0,0,0.15); animation: modalIn 0.3s ease; }
-    @keyframes modalIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    .modal-card .modal-logo { text-align: center; margin-bottom: 1.5rem; }
-    .modal-card h2 { font-size: 1.375rem; font-weight: 700; text-align: center; margin-bottom: 0.75rem; line-height: 1.35; }
-    .modal-card p { font-size: 0.9375rem; color: var(--mp-text); line-height: 1.7; margin-bottom: 1rem; }
-    .modal-card ul { margin: 0 0 1.25rem 1.25rem; font-size: 0.875rem; color: var(--mp-text); line-height: 1.8; }
-    .modal-card .legal-box { background: var(--mp-soft); border-radius: 8px; padding: 1rem 1.25rem; font-size: 0.8125rem; color: var(--mp-gray); line-height: 1.7; margin-bottom: 1.5rem; }
-    .modal-card .legal-box a { color: var(--mp-teal); }
-    .modal-card .consent-check { display: flex; align-items: flex-start; gap: 0.625rem; margin-bottom: 1.5rem; cursor: pointer; }
-    .modal-card .consent-check input { width: 20px; height: 20px; accent-color: var(--mp-teal); margin-top: 2px; flex-shrink: 0; }
-    .modal-card .consent-check label { font-size: 0.875rem; color: var(--mp-text); line-height: 1.5; cursor: pointer; }
+    /* Hero */
+    .hero {
+      background: var(--dark-blue);
+      padding: 3.5rem 2rem 4rem;
+      text-align: center;
+    }
+    .hero h1 {
+      color: var(--white);
+      font-size: 2.25rem;
+      font-weight: 700;
+      max-width: 700px;
+      margin: 0 auto 1rem;
+      line-height: 1.25;
+    }
+    .hero p {
+      color: var(--clouds);
+      font-size: 1.125rem;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Form Card */
+    .form-section {
+      max-width: 560px;
+      margin: -2rem auto 0;
+      padding: 0 1.5rem 2.5rem;
+      position: relative;
+      z-index: 1;
+    }
+    .form-card {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 24px rgba(0, 44, 74, 0.08);
+    }
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: var(--dark-blue);
+    }
+    .form-group .optional {
+      color: var(--dark-gray);
+      font-weight: 400;
+      font-size: 0.8125rem;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      border: 2px solid var(--clouds);
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      color: var(--dark-blue);
+      background: var(--white);
+      transition: border-color 0.2s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: var(--sea); }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--dark-blue);
+    }
+    .form-group textarea { resize: vertical; }
+    .select-wrapper {
+      position: relative;
+    }
+    .select-wrapper::after {
+      content: '';
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0; height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid var(--dark-blue);
+      pointer-events: none;
+    }
 
     /* Buttons */
-    .btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: var(--mp-dark); color: var(--mp-white); border: none; border-radius: 4px; font-family: 'Inter', sans-serif; font-size: 0.9375rem; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; min-height: 44px; }
-    .btn-primary:hover { background: var(--mp-dark-hover); }
-    .btn-primary.full-width { width: 100%; }
-    .btn-primary.btn-teal { background: var(--mp-teal); }
-    .btn-primary.btn-teal:hover { background: var(--mp-teal-hover); }
-    .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
-    .btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: transparent; color: var(--mp-dark); border: 2px solid var(--mp-dark); border-radius: 4px; font-family: 'Inter', sans-serif; font-size: 0.9375rem; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; min-height: 44px; }
-    .btn-secondary:hover { background: var(--mp-soft); }
-    .ghost-link { color: var(--mp-teal); text-decoration: none; font-size: 0.9375rem; font-weight: 500; cursor: pointer; border: none; background: none; font-family: 'Inter', sans-serif; }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.875rem 1.5rem;
+      background: var(--mint);
+      color: var(--dark-blue);
+      border: none;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-decoration: none;
+    }
+    .btn-primary:hover { background: var(--dark-mint); }
+    .btn-primary:focus-visible,
+    .btn-secondary:focus-visible,
+    .ghost-link:focus-visible,
+    .option-tile:focus-visible {
+      outline: 2px solid var(--dark-blue);
+      outline-offset: 2px;
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: transparent;
+      color: var(--dark-blue);
+      border: 2px solid var(--dark-blue);
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      text-decoration: none;
+    }
+    .btn-secondary:hover { background: var(--soft); }
+
+    .ghost-link {
+      color: var(--rain);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-family: 'Inter', sans-serif;
+    }
     .ghost-link:hover { text-decoration: underline; }
 
-    /* Landing Page Hero */
-    .landing-hero { background: var(--mp-dark); padding: 3.5rem 2rem 4rem; text-align: center; }
-    .landing-hero h1 { color: var(--mp-white); font-size: 2.125rem; font-weight: 700; max-width: 680px; margin: 0 auto 1rem; line-height: 1.3; }
-    .landing-hero p { color: #CCCCCC; font-size: 1.0625rem; max-width: 560px; margin: 0 auto; line-height: 1.7; }
-    .landing-hero .hero-badge { display: inline-block; background: var(--mp-teal); color: var(--mp-white); font-size: 0.8125rem; font-weight: 600; padding: 0.375rem 1rem; border-radius: 100px; margin-bottom: 1.25rem; letter-spacing: 0.5px; }
-
-    /* USP Section */
-    .usp-section { max-width: 800px; margin: -2rem auto 0; padding: 0 1.5rem 2rem; position: relative; z-index: 1; }
-    .usp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
-    .usp-card { background: var(--mp-white); border-radius: 12px; padding: 1.75rem 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.06); text-align: center; }
-    .usp-card .usp-icon { width: 48px; height: 48px; background: var(--mp-teal-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; }
-    .usp-card .usp-icon svg { width: 24px; height: 24px; stroke: var(--mp-teal); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-    .usp-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
-    .usp-card p { font-size: 0.875rem; color: var(--mp-gray); line-height: 1.6; }
-    @media (max-width: 640px) { .usp-grid { grid-template-columns: 1fr; } }
-
-    /* How it works */
-    .how-section { max-width: 640px; margin: 0 auto; padding: 2.5rem 1.5rem; }
-    .how-section h2 { font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 0.5rem; }
-    .how-section .how-sub { text-align: center; font-size: 0.9375rem; color: var(--mp-gray); margin-bottom: 2rem; line-height: 1.6; }
-    .how-steps { display: flex; flex-direction: column; gap: 1.25rem; }
-    .how-step { display: flex; align-items: flex-start; gap: 1rem; }
-    .how-step .step-num { width: 36px; height: 36px; border-radius: 50%; background: var(--mp-teal); color: var(--mp-white); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.875rem; flex-shrink: 0; }
-    .how-step .step-text h4 { font-size: 0.9375rem; font-weight: 600; margin-bottom: 0.25rem; }
-    .how-step .step-text p { font-size: 0.875rem; color: var(--mp-gray); line-height: 1.6; }
-
-    /* AI Section */
-    .ai-section { max-width: 640px; margin: 0 auto; padding: 0 1.5rem 2.5rem; text-align: center; }
-    .ai-section .ai-cta-card { background: var(--mp-white); border: 2px solid var(--mp-teal); border-radius: 12px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,128,96,0.1); }
-    .ai-section .ai-cta-card h2 { font-size: 1.375rem; font-weight: 700; margin-bottom: 0.5rem; }
-    .ai-section .ai-cta-card p { font-size: 0.9375rem; color: var(--mp-gray); margin-bottom: 1.5rem; line-height: 1.6; }
-    .ai-section .ai-mode-toggle { display: flex; gap: 0.75rem; justify-content: center; margin-bottom: 1.25rem; }
-    .ai-mode-toggle button { padding: 0.5rem 1.25rem; border-radius: 100px; border: 2px solid var(--mp-clouds); background: var(--mp-white); font-family: 'Inter', sans-serif; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: all 0.2s; color: var(--mp-dark); }
-    .ai-mode-toggle button.active { background: var(--mp-teal-light); border-color: var(--mp-teal); color: var(--mp-teal); font-weight: 600; }
-    .ai-mode-toggle button:hover { border-color: var(--mp-teal); }
-    .ai-widget-wrapper { min-height: 120px; margin-top: 1rem; }
-    .ai-disclosure { background: var(--mp-teal-light); border-radius: 8px; padding: 0.875rem 1.25rem; font-size: 0.8125rem; line-height: 1.6; color: var(--mp-text); text-align: left; margin-bottom: 1.25rem; }
-
-    /* Callback section */
-    .callback-divider { display: flex; align-items: center; gap: 1rem; max-width: 640px; margin: 0 auto; padding: 0 1.5rem; }
-    .callback-divider .line { flex: 1; height: 1px; background: var(--mp-clouds); }
-    .callback-divider span { font-size: 0.875rem; color: var(--mp-sea); font-weight: 500; }
-    .callback-section { max-width: 640px; margin: 0 auto; padding: 1.5rem; }
-    .callback-card { background: var(--mp-white); border-radius: 12px; padding: 2rem; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-    .callback-card h3 { font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; }
-    .callback-card p { font-size: 0.9375rem; color: var(--mp-gray); line-height: 1.6; margin-bottom: 1.25rem; }
-    .callback-card .form-group { margin-bottom: 1rem; }
-    .callback-card .form-group label { display: block; font-size: 0.875rem; font-weight: 500; margin-bottom: 0.375rem; color: var(--mp-dark); }
-    .callback-card .form-group input, .callback-card .form-group select, .callback-card .form-group textarea { width: 100%; padding: 0.75rem 0.875rem; border: 1px solid var(--mp-clouds); border-radius: 4px; font-family: 'Inter', sans-serif; font-size: 0.9375rem; color: var(--mp-dark); background: var(--mp-white); }
-    .callback-card .form-group textarea { resize: vertical; min-height: 80px; }
-    .callback-card .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    @media (max-width: 520px) { .callback-card .form-row { grid-template-columns: 1fr; } }
-
-    /* Debug panel (testing only) */
-    .debug-panel { background: #2d2d2d; border-radius: 12px; padding: 1.5rem; margin: 2rem auto; max-width: 640px; }
-    .debug-panel h3 { color: #aaa; font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; }
-    .debug-panel .form-group { margin-bottom: 0.75rem; }
-    .debug-panel .form-group label { display: block; font-size: 0.8125rem; font-weight: 500; margin-bottom: 0.25rem; color: #999; }
-    .debug-panel .form-group input, .debug-panel .form-group select { width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #444; border-radius: 4px; font-family: 'Inter', sans-serif; font-size: 0.8125rem; color: #eee; background: #1a1a1a; }
-    .debug-panel .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-    .debug-panel .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; }
-    .debug-toggle { position: fixed; bottom: 1rem; left: 1rem; z-index: 100; background: #333; color: #999; border: 1px solid #555; border-radius: 6px; padding: 0.375rem 0.75rem; font-size: 0.6875rem; font-family: monospace; cursor: pointer; }
-    .debug-toggle:hover { color: #fff; border-color: #888; }
-
-    /* Confirmation page */
-    .confirm-section { text-align: center; max-width: 520px; margin: 0 auto; padding: 4rem 1.5rem; }
-    .confirm-icon { width: 80px; height: 80px; background: var(--mp-teal-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem; }
-    .confirm-icon svg { width: 40px; height: 40px; stroke: var(--mp-teal); fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
-    .confirm-section h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 1rem; }
-    .confirm-section .confirm-body { font-size: 1.0625rem; color: var(--mp-dark); line-height: 1.7; margin-bottom: 2rem; }
-
-    /* Footer */
-    .mp-footer { background: var(--mp-white); border-top: 1px solid var(--mp-clouds); padding: 2rem; margin-top: 2rem; }
-    .mp-footer-inner { max-width: 800px; margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-start; gap: 2rem; flex-wrap: wrap; }
-    .mp-footer-col { font-size: 0.8125rem; color: var(--mp-gray); line-height: 1.8; }
-    .mp-footer-col strong { color: var(--mp-dark); font-size: 0.8125rem; }
-    .mp-footer-col a { color: var(--mp-teal); text-decoration: none; display: block; }
-    .mp-footer-col a:hover { text-decoration: underline; }
-    .mp-footer-bottom { max-width: 800px; margin: 1rem auto 0; padding-top: 1rem; border-top: 1px solid var(--mp-clouds); font-size: 0.75rem; color: var(--mp-sea); }
-    .mp-footer-bottom a { color: var(--mp-teal); }
-    .mp-footer .co-brand { font-size: 0.6875rem; color: var(--mp-sea); text-align: center; margin-top: 0.75rem; }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .landing-hero h1 { font-size: 1.625rem; }
-      .landing-hero p { font-size: 1rem; }
-      .mp-footer-inner { flex-direction: column; gap: 1.5rem; }
+    /* Trust Strip */
+    .trust-strip {
+      text-align: center;
+      padding: 1.5rem 2rem;
+      color: var(--dark-gray);
+      font-size: 0.875rem;
     }
+    .trust-strip span { margin: 0 0.75rem; }
+
+    /* Page 2: Choose Path */
+    .choose-section {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 1.5rem 3rem;
+    }
+    .page-heading {
+      text-align: center;
+      padding: 3rem 2rem 0.5rem;
+    }
+    .page-heading h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+    .page-heading p {
+      font-size: 1.125rem;
+      color: var(--dark-gray);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+      max-width: 1080px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    @media (max-width: 900px) {
+      .cards-grid { grid-template-columns: 1fr; max-width: 480px; }
+    }
+
+    .path-card {
+      background: var(--white);
+      border: 1px solid var(--clouds);
+      border-radius: 12px;
+      padding: 2rem 1.5rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      transition: box-shadow 0.2s;
+      position: relative;
+      cursor: pointer;
+    }
+    .path-card:hover {
+      box-shadow: 0 4px 12px rgba(0, 44, 74, 0.08);
+    }
+
+    .path-card.disabled {
+      opacity: 0.55;
+      cursor: default;
+      pointer-events: none;
+      background: #f0f0f0;
+      border-color: #d5d5d5;
+    }
+    .path-card.disabled:hover {
+      box-shadow: none;
+    }
+    .path-card.disabled .btn-primary {
+      background: var(--middle-gray);
+      color: var(--white);
+      cursor: default;
+    }
+    .path-card.disabled .card-badge {
+      background: #d5d5d5;
+      color: #888;
+    }
+    .path-card.disabled .card-icon {
+      background: #ddd;
+    }
+    .path-card.disabled .card-icon svg {
+      stroke: #999;
+    }
+
+    .card-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: var(--mint);
+      color: var(--dark-blue);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      padding: 0.25rem 0.75rem;
+      border-radius: 100px;
+    }
+
+    .card-icon {
+      width: 56px;
+      height: 56px;
+      background: var(--mint);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+    }
+    .card-icon svg {
+      width: 28px;
+      height: 28px;
+      fill: none;
+      stroke: var(--dark-blue);
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .path-card h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      line-height: 1.35;
+      padding-right: 4.5rem;
+    }
+    .path-card .card-desc {
+      font-size: 0.9375rem;
+      color: var(--dark-blue);
+      line-height: 1.6;
+      margin-bottom: 0.75rem;
+      flex: 1;
+    }
+    .path-card .card-sub {
+      font-size: 0.8125rem;
+      color: var(--dark-gray);
+      margin-bottom: 1.25rem;
+    }
+    .path-card .btn-primary {
+      margin-top: auto;
+    }
+    .path-card .card-time {
+      text-align: center;
+      width: 100%;
+      margin-top: 0.75rem;
+      font-size: 0.8125rem;
+      color: var(--dark-gray);
+    }
+    .path-card .card-secondary {
+      text-align: center;
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+
+    /* Page 3 shared styles */
+    .inner-page {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 0 1.5rem 3rem;
+    }
+    .inner-page .page-heading {
+      text-align: left;
+      padding: 2.5rem 0 0.25rem;
+    }
+    .inner-page .page-heading p {
+      margin: 0;
+      text-align: left;
+    }
+
+    .dsgvo-notice {
+      font-size: 0.8125rem;
+      color: var(--dark-gray);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+    .dsgvo-notice a {
+      color: var(--rain);
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    /* Page 3B AI */
+    .ai-disclosure {
+      background: var(--mint);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      font-size: 0.875rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      color: var(--dark-blue);
+    }
+    .chat-widget-placeholder {
+      background: var(--white);
+      border: 2px solid var(--clouds);
+      border-radius: 12px;
+      height: 420px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .chat-widget-placeholder .chat-bubble {
+      width: 64px;
+      height: 64px;
+      background: var(--mint);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .chat-widget-placeholder .chat-bubble svg {
+      width: 32px; height: 32px;
+      stroke: var(--dark-blue);
+      fill: none;
+      stroke-width: 2;
+    }
+    .chat-widget-placeholder p {
+      font-size: 0.9375rem;
+      color: var(--dark-gray);
+    }
+
+    /* ElevenLabs widget container */
+
+    /* Wizard stepper */
+    .wizard-progress {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.25rem;
+      margin-bottom: 2rem;
+    }
+    .step-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--clouds);
+      transition: background 0.3s, transform 0.3s;
+    }
+    .step-dot.active { background: var(--dark-blue); transform: scale(1.3); }
+    .step-dot.done { background: var(--leaf); }
+    .step-line {
+      width: 28px; height: 2px;
+      background: var(--clouds);
+      transition: background 0.3s;
+    }
+    .step-line.done { background: var(--leaf); }
+
+    .wizard-step {
+      display: none;
+      animation: wizardIn 0.25s ease;
+      will-change: transform, opacity;
+    }
+    .wizard-step.active { display: block; }
+    @keyframes wizardIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .step-counter {
+      font-size: 0.8125rem;
+      color: var(--dark-gray);
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+    .wizard-question {
+      font-size: 1.25rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 0.375rem;
+    }
+    .wizard-sub {
+      font-size: 0.9375rem;
+      color: var(--dark-gray);
+      text-align: center;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+
+    .option-tiles {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+    @media (max-width: 400px) {
+      .option-tiles { grid-template-columns: 1fr; }
+    }
+    .option-tiles-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    @media (max-width: 520px) {
+      .option-tiles-3 { grid-template-columns: 1fr; }
+    }
+    .option-tile {
+      background: var(--white);
+      border: 2px solid var(--clouds);
+      border-radius: 10px;
+      padding: 1.25rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--dark-blue);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .option-tile:hover {
+      border-color: var(--dark-blue);
+      box-shadow: 0 2px 8px rgba(0,44,74,0.08);
+    }
+    .option-tile.selected {
+      border-color: var(--dark-blue);
+      background: var(--mint);
+    }
+    .option-tile .tile-icon svg {
+      width: 32px; height: 32px;
+      stroke: var(--dark-blue);
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .wizard-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.5rem;
+    }
+    .wizard-nav .btn-wizard-back {
+      background: none;
+      border: none;
+      color: var(--rain);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 0.5rem 0;
+    }
+    .wizard-nav .btn-wizard-back:hover { text-decoration: underline; }
+    .wizard-nav .btn-wizard-back:focus-visible {
+      outline: 2px solid var(--dark-blue);
+      outline-offset: 2px;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--clouds);
+      margin: 2rem 0;
+    }
+    .voice-section h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .voice-section p {
+      font-size: 0.9375rem;
+      color: var(--dark-gray);
+      margin-bottom: 1.5rem;
+    }
+
+    /* Page 4: Confirmation */
+    .confirm-section {
+      text-align: center;
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem;
+    }
+    .confirm-icon {
+      width: 80px;
+      height: 80px;
+      background: var(--mint);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 2rem;
+    }
+    .confirm-icon svg {
+      width: 40px;
+      height: 40px;
+      stroke: var(--leaf);
+      fill: none;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .confirm-section h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+    .confirm-section .confirm-body {
+      font-size: 1.0625rem;
+      color: var(--dark-blue);
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+    .confirm-section .portal-teaser {
+      background: var(--mint);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      font-size: 0.9375rem;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+    .confirm-section .btn-secondary {
+      display: inline-flex;
+      margin-top: 0.5rem;
+    }
+
+    /* Loading overlay */
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 44, 74, 0.5);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .loading-overlay.active { display: flex; }
+    .loading-card {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 3rem;
+      text-align: center;
+      max-width: 360px;
+    }
+    .spinner {
+      width: 48px; height: 48px;
+      border: 4px solid var(--clouds);
+      border-top-color: var(--dark-blue);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 1.5rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Sticky AI help FAB */
+    .ai-help-fab { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 50; display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.25rem; background: var(--dark-blue); color: var(--mint); border: none; border-radius: 100px; font-family: 'Inter', sans-serif; font-size: 0.875rem; font-weight: 600; cursor: pointer; box-shadow: 0 4px 16px rgba(0,44,74,0.3); transition: all 0.2s; }
+    .ai-help-fab:hover { background: var(--dark-blue-hover); box-shadow: 0 6px 24px rgba(0,44,74,0.4); transform: translateY(-1px); }
+    .ai-help-fab svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; }
+
+    /* Form row helpers for AI vars page */
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem; }
+
+    /* Kontakt page layout */
+    .kontakt-body {
+      max-width: 760px;
+      margin: -2.5rem auto 0;
+      padding: 0 1.5rem 3rem;
+      position: relative;
+      z-index: 1;
+    }
+    .kontakt-form-card {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 2.5rem 2rem 2rem;
+      box-shadow: 0 4px 24px rgba(0, 44, 74, 0.10);
+      margin-bottom: 3rem;
+    }
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .checkbox-group input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      min-width: 20px;
+      margin-top: 2px;
+      accent-color: var(--dark-blue);
+      cursor: pointer;
+    }
+    .checkbox-group label {
+      font-size: 0.8125rem;
+      color: var(--dark-blue);
+      line-height: 1.5;
+      cursor: pointer;
+    }
+    .checkbox-group label a {
+      color: var(--rain);
+      text-decoration: underline;
+    }
+
+    /* Contact options 2x2 grid */
+    .contact-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    @media (max-width: 560px) {
+      .contact-options { grid-template-columns: 1fr; }
+    }
+    .contact-option {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .contact-option-icon {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      background: var(--soft);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .contact-option-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--dark-blue);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .contact-option h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    .contact-option p {
+      font-size: 0.875rem;
+      color: var(--dark-gray);
+      line-height: 1.5;
+    }
+    .contact-option a {
+      color: var(--rain);
+      font-weight: 500;
+      text-decoration: none;
+      font-size: 0.875rem;
+    }
+    .contact-option a:hover { text-decoration: underline; }
+
+    /* Beratungstermin info box */
+    .beratung-box {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 2.5rem;
+      border: 1px solid var(--clouds);
+    }
+    .beratung-box h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .beratung-box p {
+      font-size: 0.875rem;
+      color: var(--dark-gray);
+      line-height: 1.6;
+    }
+
+    /* Trust badges strip */
+    .trust-badges {
+      text-align: center;
+      padding: 2rem 1rem;
+      background: var(--white);
+      border-radius: 12px;
+      border: 1px solid var(--clouds);
+    }
+    .trust-badges p {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--dark-blue);
+    }
+    .trust-badges .badge-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .badge-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8125rem;
+      color: var(--dark-gray);
+      font-weight: 500;
+    }
+    .badge-item .badge-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--mint);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .badge-item .badge-icon svg {
+      width: 20px;
+      height: 20px;
+      stroke: var(--dark-blue);
+      fill: none;
+      stroke-width: 2;
+    }
+
+    /* AI widget section within kontakt */
+    .kontakt-ai-section {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 24px rgba(0, 44, 74, 0.10);
+      margin-bottom: 2rem;
+    }
+
+    /* Touch targets & focus */
+    .btn-primary, .btn-secondary { min-height: 44px; }
+    .ghost-link { min-height: 44px; display: inline-flex; align-items: center; }
+    .btn-wizard-back { min-height: 44px; }
+    .btn-primary:focus-visible, .btn-secondary:focus-visible,
+    .ghost-link:focus-visible, .option-tile:focus-visible,
+    .btn-wizard-back:focus-visible, .ai-help-fab:focus-visible {
+      outline: 2px solid var(--dark-blue);
+      outline-offset: 2px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 1.75rem; }
+      .hero p { font-size: 1rem; }
+      .page-heading h1 { font-size: 1.625rem; }
+    }
+
+    @media (max-width: 640px) {
+      .hero { padding: 2.5rem 1.25rem 3rem; }
+      .hero h1 { font-size: 1.5rem; }
+      .form-section { padding: 0 1rem 2rem; }
+      .wizard-step { padding-bottom: 5rem; }
+    }
+    .wizard-step[data-step="5"] { padding-bottom: 5rem; }
+
     @media (max-width: 520px) {
       .header { padding: 0.75rem 1rem; }
       .header-phone { font-size: 0; gap: 0; min-height: 44px; min-width: 44px; justify-content: center; border-radius: 8px; }
+      .header-phone:hover { background: rgba(255,255,255,0.1); }
       .header-phone .phone-icon { width: 22px; height: 22px; }
-      .header-helvetia { display: none; }
-      .landing-hero { padding: 2.5rem 1.25rem 3rem; }
-      .landing-hero h1 { font-size: 1.375rem; }
-      .modal-card { padding: 2rem 1.5rem; }
-      .usp-section { padding: 0 1rem 1.5rem; }
-      .how-section { padding: 2rem 1rem; }
-      .ai-section { padding: 0 1rem 2rem; }
-      .callback-section { padding: 1rem; }
+      .hero p { font-size: 0.9375rem; }
+      .form-card { padding: 1.5rem; }
+      .page-heading { padding: 2rem 1rem 0.5rem; }
+      .page-heading h1 { font-size: 1.5rem; }
+      .page-heading p { font-size: 1rem; }
+      .choose-section { padding: 0 1rem 2rem; }
+      .path-card h3 { padding-right: 0; font-size: 1.125rem; }
+      .card-badge { position: static; display: inline-block; margin-bottom: 0.75rem; }
+      .inner-page { padding: 0 1rem 2rem; }
       .confirm-section { padding: 3rem 1rem; }
-      .debug-panel { margin: 2rem 1rem; }
+      .confirm-section h1 { font-size: 1.375rem; }
+      .form-row, .form-row-3 { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 400px) {
+      .hero h1 { font-size: 1.25rem; }
+      .hero p { font-size: 0.875rem; }
+      .page-heading h1 { font-size: 1.25rem; }
+      .form-group input, .form-group select, .form-group textarea { padding: 0.625rem 0.75rem; }
+      .btn-primary, .btn-secondary { font-size: 0.875rem; padding: 0.625rem 1rem; min-height: 44px; }
+      .option-tile { padding: 1rem 0.75rem; }
+      .ai-help-fab { padding: 0.625rem 1rem; font-size: 0.8125rem; bottom: 1rem; right: 1rem; }
     }
   </style>
 </head>
 <body>
 
-<!-- ==================== CONSENT MODAL ==================== -->
-<div class="modal-overlay" id="consent-modal">
-  <div class="modal-card">
-    <div class="modal-logo">
-      <span style="font-size:1.25rem;font-weight:700;color:var(--mp-dark);letter-spacing:2px;">MONEY<svg style="width:18px;height:18px;fill:var(--mp-dark);vertical-align:middle;margin:0 2px;" viewBox="0 0 24 24"><path d="M12 2C8 2 4 6 4 10c0 6 8 12 8 12s8-6 8-12c0-4-4-8-8-8z"/></svg>PARK</span>
-      <span style="font-size:0.625rem;color:var(--mp-gray);margin-left:0.5rem;">a company of <strong>helvetia</strong></span>
+<!-- ================ PAGE 1: CHOOSE YOUR ENTRY POINT ================ -->
+<div class="page active" id="page-choose-path">
+  <header class="header">
+    <div class="header-logo">Baufi<span>24</span></div>
+    <a href="tel:08008084000" class="header-phone">
+      <svg class="phone-icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+      0800 / 808 4000
+    </a>
+  </header>
+
+  <section class="hero">
+    <h1>Ihre Baufinanzierung — einfach, transparent, unverbindlich</h1>
+    <p>Wählen Sie, wie Sie zu uns gekommen sind — so können wir Sie optimal weiterleiten.</p>
+  </section>
+
+  <div class="choose-section">
+    <div class="cards-grid">
+      <!-- Card A: 0800 Call Center -->
+      <div class="path-card" onclick="goToPage('ai-assistant', 'call')">
+        <span class="card-badge">Sofort verbunden</span>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        </div>
+        <h3>Telefonische Beratung (0800)</h3>
+        <p class="card-desc">Sie haben unsere Hotline angerufen? Unser KI-Assistent übernimmt sofort — keine Warteschleife, sofortige Hilfe.</p>
+        <p class="card-sub">Anruf-Simulation · Minimale Daten</p>
+        <button class="btn-primary" onclick="event.stopPropagation(); goToPage('ai-assistant', 'call')">KI-Gespräch starten →</button>
+      </div>
+
+      <!-- Card B: Generic Contact Form -->
+      <div class="path-card" onclick="goToPage('form-entry')">
+        <span class="card-badge">Kontakt</span>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <h3>Kontaktformular</h3>
+        <p class="card-desc">Sie haben uns über das Website-Formular kontaktiert? Teilen Sie uns Ihr Anliegen mit und sprechen Sie anschließend mit unserem KI-Assistenten.</p>
+        <p class="card-sub">Name · Interesse · Nachricht</p>
+        <button class="btn-primary" onclick="event.stopPropagation(); goToPage('form-entry')">Formular ausfüllen →</button>
+      </div>
+
+      <!-- Card C: Self-Onboarding (disabled — not yet planned) -->
+      <div class="path-card disabled">
+        <span class="card-badge">Noch nicht geplant</span>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <h3>Online-Antrag starten</h3>
+        <p class="card-desc">Beantworten Sie ein paar kurze Fragen und erhalten Sie ein unverbindliches Finanzierungsangebot — plus ein persönliches Immobilien-Portal als Bonus.</p>
+        <p class="card-sub">6 Schritte · Kein Gespräch nötig</p>
+        <button class="btn-primary" disabled>Angebot anfordern →</button>
+      </div>
+
     </div>
-    <h2>Before we begin</h2>
-    <p>This service is provided by <strong>PriceHubble AG</strong> on behalf of <strong>MoneyPark</strong>. To offer you a personalized experience, we process the following data:</p>
-    <ul>
-      <li>Your name and contact information</li>
-      <li>Property and mortgage details shared during the conversation</li>
-      <li>Conversation content (voice or text) with the AI assistant</li>
-    </ul>
-    <div class="legal-box">
-      Your data is processed by PriceHubble AG as a data processor on behalf of MoneyPark (Helvetia Group), in compliance with <strong>GDPR</strong> and Swiss data protection law (<strong>nDSG</strong>). Your information is used exclusively for mortgage advisory services and will be shared with your MoneyPark advisor. You may request deletion at any time.<br><br>
-      <a href="#">Privacy policy</a> &middot; <a href="#">Terms of use</a> &middot; <a href="#">Data processing agreement</a>
-    </div>
-    <div class="consent-check">
-      <input type="checkbox" id="consent-checkbox">
-      <label for="consent-checkbox">I understand and agree that my data will be processed by PriceHubble on behalf of MoneyPark for the purpose of mortgage advisory services.</label>
-    </div>
-    <button class="btn-primary btn-teal full-width" id="consent-accept-btn" disabled onclick="acceptConsent()">Continue to MoneyPark AI advisor</button>
+  </div>
+
+  <div class="trust-strip">
+    Kostenlos &amp; unverbindlich <span>·</span> Über 500 Finanzierungspartner <span>·</span> DSGVO-konform
   </div>
 </div>
 
-<!-- ==================== PAGE: AI LANDING ==================== -->
-<div class="page" id="page-landing">
+<!-- ================ PAGE 2B: KONTAKT (matches baufi24.de/kontakt/) ================ -->
+<div class="page" id="page-form-entry">
   <header class="header">
-    <div class="header-brand">
-      <div class="header-logo">MONEY<svg class="logo-icon" viewBox="0 0 24 24"><path d="M12 2C8 2 4 6 4 10c0 6 8 12 8 12s8-6 8-12c0-4-4-8-8-8z"/></svg>PARK</div>
-      <div class="header-helvetia">a company of<br><strong>helvetia</strong></div>
-    </div>
-    <div class="header-right">
-      <a href="tel:+41442007597" class="header-phone"><svg class="phone-icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>+41 44 200 75 97</a>
-    </div>
+    <div class="header-logo">Baufi<span>24</span></div>
+    <a href="tel:08008084000" class="header-phone">
+      <svg class="phone-icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+      0800 / 808 4000
+    </a>
   </header>
 
-  <!-- Hero -->
-  <section class="landing-hero">
-    <span class="hero-badge">AI-powered &middot; Available 24/7</span>
-    <h1 id="hero-title">Prepare your mortgage renewal with Anna, your virtual assistant</h1>
-    <p id="hero-subtitle">Anna collects the information your advisor needs — so your meeting is shorter, more productive, and your file is processed faster.</p>
+  <section class="hero">
+    <p style="color:var(--sea); font-size:0.875rem; margin-bottom:0.75rem;">Home / Kontakt</p>
+    <h1>Wie können wir dir helfen?</h1>
+    <p>Egal, ob du allgemeine Fragen rund um deine Finanzierung hast oder bereits ein konkretes Angebot willst: Wir beraten dich gern. Alle mit * gekennzeichneten Felder sind Pflichtfelder.</p>
   </section>
 
-  <!-- USPs -->
-  <section class="usp-section">
-    <div class="usp-grid">
-      <div class="usp-card">
-        <div class="usp-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-        <h3>Available 24/7</h3>
-        <p>Start anytime — mornings, evenings, weekends. No appointment needed.</p>
-      </div>
-      <div class="usp-card">
-        <div class="usp-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
-        <h3>Fast-lane experience</h3>
-        <p>Skip the queue. Your file is pre-filled and ready when your advisor calls.</p>
-      </div>
-      <div class="usp-card">
-        <div class="usp-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
-        <h3>No repeating yourself</h3>
-        <p>Everything you share goes directly to your advisor. One conversation, zero duplicates.</p>
-      </div>
-    </div>
-  </section>
+  <div class="kontakt-body">
 
-  <!-- How it works -->
-  <section class="how-section">
-    <h2>How it works</h2>
-    <p class="how-sub">A simple, structured conversation that prepares everything your advisor needs.</p>
-    <div class="how-steps">
-      <div class="how-step">
-        <div class="step-num">1</div>
-        <div class="step-text">
-          <h4>Personal situation</h4>
-          <p>Anna asks about any changes since your last mortgage — employment, income, family, renovations.</p>
+    <!-- Form Card -->
+    <div class="kontakt-form-card" id="kontakt-form-card">
+      <div class="form-group">
+        <label>Ihr Finanzierungsvorhaben <strong>*</strong></label>
+        <div class="select-wrapper">
+          <select id="form-interest" required>
+            <option value="" disabled selected>Bitte wählen</option>
+            <option value="Immobilienkauf">Immobilienfinanzierung</option>
+            <option value="Anschlussfinanzierung">Anschlussfinanzierung</option>
+            <option value="Modernisierung">Modernisierung</option>
+            <option value="Neubau">Neubau</option>
+            <option value="Allgemeine Beratung">Allgemeine Beratung</option>
+          </select>
         </div>
       </div>
-      <div class="how-step">
-        <div class="step-num">2</div>
-        <div class="step-text">
-          <h4>Your preferences</h4>
-          <p>What matters to you: fixed vs. SARON rate, tranche structure, budget priorities.</p>
+      <div class="form-group">
+        <label>Vor- und Nachname <strong>*</strong></label>
+        <input type="text" id="form-name" placeholder="Max Mustermann" required>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Vorwahl</label>
+          <input type="text" id="form-vorwahl" placeholder="+49" value="+49" maxlength="4">
+        </div>
+        <div class="form-group">
+          <label>Rufnummer <span class="optional">(optional)</span></label>
+          <input type="tel" id="form-phone" placeholder="170 1234567">
         </div>
       </div>
-      <div class="how-step">
-        <div class="step-num">3</div>
-        <div class="step-text">
-          <h4>Next steps</h4>
-          <p>Anna proposes available time slots for a short meeting with your personal advisor.</p>
+      <div class="form-group">
+        <label>Wie ist dein Beschäftigungsverhältnis?</label>
+        <div class="select-wrapper">
+          <select id="form-employment">
+            <option value="" disabled selected>Bitte wählen</option>
+            <option value="Angestellter">Angestellte/r</option>
+            <option value="Beamter">Beamte/r</option>
+            <option value="Selbstständiger">Selbstständig</option>
+            <option value="Freiberufler">Freiberufler/in</option>
+            <option value="Rentner">Rentner/in</option>
+            <option value="Sonstiges">Sonstiges</option>
+          </select>
         </div>
       </div>
-      <div class="how-step">
-        <div class="step-num">4</div>
-        <div class="step-text">
-          <h4>Your advisor takes over</h4>
-          <p>With your file prepared, your advisor can go straight to finding the best rate from 150+ partners.</p>
+      <div class="form-group">
+        <label>Deine Nachricht <span class="optional">(optional)</span></label>
+        <textarea id="form-message" rows="3" placeholder="Beschreibe kurz dein Anliegen …"></textarea>
+      </div>
+
+      <div class="checkbox-group">
+        <input type="checkbox" id="form-dsgvo" checked>
+        <label for="form-dsgvo">Ich bin damit einverstanden, dass die Baufi24 GmbH meine Daten zur Kontaktaufnahme sowie Beratung nutzt. Die Daten werden gemäß der <a href="https://www.baufi24.de/datenschutz/" target="_blank">Datenschutzerklärung</a> verarbeitet und nicht an Dritte verkauft.</label>
+      </div>
+      <div class="checkbox-group" style="margin-bottom:1.5rem;">
+        <input type="checkbox" id="form-newsletter">
+        <label for="form-newsletter">Ich möchte per E-Mail über aktuelle Zinsen, Tipps &amp; Angebote informiert werden. Abmeldung jederzeit möglich.</label>
+      </div>
+
+      <button class="btn-primary" id="form-launch-agent-btn" onclick="launchAgentFromForm()">Absenden →</button>
+    </div>
+
+    <!-- AI Widget Section (appears after form submit) -->
+    <div id="form-ai-section" style="display:none;">
+      <div class="kontakt-ai-section">
+        <div class="ai-disclosure" style="margin-bottom:1rem;">
+          <strong>Hinweis:</strong> Sie sprechen jetzt mit einem KI-gestützten Assistenten von Baufi24, nicht mit einem Menschen. Ihre Daten werden gemäß DSGVO geschützt.
+        </div>
+        <p style="font-size:0.9375rem; color:var(--dark-gray); margin-bottom:1.25rem;">Stellen Sie Ihre Fragen — z.B.: <em>„Was ist eine Anschlussfinanzierung?"</em>, <em>„Wie viel Eigenkapital brauche ich?"</em> oder <em>„Welche Unterlagen benötige ich?"</em></p>
+        <div id="form-ai-widget-container"></div>
+      </div>
+    </div>
+
+    <!-- Contact Options Grid (matches baufi24.de/kontakt/) -->
+    <div class="contact-options">
+      <div class="contact-option">
+        <div class="contact-option-icon">
+          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
+        </div>
+        <div>
+          <h3>Ich möchte ein Angebot</h3>
+          <p>Mit wenigen Klicks &amp; Angaben zu deinem unverbindlichen Angebot:</p>
+          <a href="https://www.baufi24.de/angebot-anfordern/" target="_blank">Jetzt kostenlos anfordern.</a>
+        </div>
+      </div>
+      <div class="contact-option">
+        <div class="contact-option-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <div>
+          <h3>Unsere Standorte</h3>
+          <p>Persönliche Beratung in deiner Nähe.</p>
+          <a href="https://www.baufi24.de/standorte/" target="_blank">Hier findest du alle unsere Standorte</a>
+        </div>
+      </div>
+      <div class="contact-option">
+        <div class="contact-option-icon">
+          <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <div>
+          <h3>E-Mail schreiben</h3>
+          <p>Einfach Kontaktformular ausfüllen und wir melden uns bei dir:</p>
+          <a href="#" onclick="document.getElementById('kontakt-form-card').scrollIntoView({behavior:'smooth'}); return false;">Jetzt schreiben.</a>
+        </div>
+      </div>
+      <div class="contact-option">
+        <div class="contact-option-icon">
+          <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+        </div>
+        <div>
+          <h3>Ruf uns an</h3>
+          <p>Anrufen und Wunschtermin zur Beratung vereinbaren:</p>
+          <a href="tel:08008084000">0800 / 808 4000*</a>
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- AI Widget Section -->
-  <section class="ai-section">
-    <div class="ai-cta-card">
-      <h2>Ready? Start your conversation</h2>
-      <p>Choose how you'd like to interact with Anna. Both options are free and take 5–10 minutes.</p>
-      <div class="ai-disclosure">
-        <strong>Note:</strong> You are speaking with an AI-powered assistant, not a human. Your data is protected under GDPR and Swiss data protection law, and will be shared exclusively with your MoneyPark advisor.
-      </div>
-      <div class="ai-mode-toggle">
-        <button class="active" onclick="setAiMode('voice')" id="mode-voice">Voice</button>
-        <button onclick="setAiMode('text')" id="mode-text">Text chat</button>
-      </div>
-      <button class="btn-primary btn-teal full-width" id="start-ai-btn" onclick="launchAgent()">
-        <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
-        Start conversation with Anna
-      </button>
-      <div id="ai-widget-container" class="ai-widget-wrapper"></div>
+    <!-- Beratungstermin -->
+    <div class="beratung-box">
+      <h3>* Dein Beratungstermin</h3>
+      <p>Um dich individuell zu beraten, möchten wir uns Zeit nehmen. Ruf uns an und mach einen Wunschtermin für eine persönliche Beratung aus. Anrufe sind deutschlandweit kostenfrei. Wir sind für dich erreichbar von Montag bis Freitag von 8:00 bis 18:00 Uhr.</p>
     </div>
-  </section>
 
-  <!-- Callback alternative -->
-  <div class="callback-divider"><div class="line"></div><span>or</span><div class="line"></div></div>
-  <section class="callback-section">
-    <div class="callback-card">
-      <h3>Prefer a human? Request a callback</h3>
-      <p>Fill in your details and a MoneyPark advisor will contact you.</p>
-      <div class="callback-card form-row">
-        <div class="form-group"><label>Full name</label><input type="text" id="cb-name" placeholder="Hans Müller"></div>
-        <div class="form-group"><label>Phone number</label><input type="tel" id="cb-phone" placeholder="+41 79 123 45 67"></div>
+    <!-- Trust Badges -->
+    <div class="trust-badges">
+      <p>Top bewertet und vielfach ausgezeichnet</p>
+      <div class="badge-row">
+        <div class="badge-item">
+          <div class="badge-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+          Trustpilot
+        </div>
+        <div class="badge-item">
+          <div class="badge-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          TÜV Preis-Leistung
+        </div>
+        <div class="badge-item">
+          <div class="badge-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg></div>
+          Top Vermittler
+        </div>
+        <div class="badge-item">
+          <div class="badge-icon"><svg viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 010-5C7 4 9 7 12 7s5-3 7.5-3a2.5 2.5 0 010 5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0012 0V2z"/></svg></div>
+          Preis-Champions
+        </div>
       </div>
-      <div class="form-group"><label>Preferred time</label><input type="text" id="cb-time" placeholder="e.g. Tuesday morning, any afternoon"></div>
-      <div class="form-group"><label>Anything else? <span style="color:var(--mp-gray);font-weight:400;">(optional)</span></label><textarea id="cb-notes" placeholder="Questions, preferences, or context for the advisor..."></textarea></div>
-      <button class="btn-primary full-width" onclick="submitCallback()">Request callback &rarr;</button>
     </div>
-  </section>
 
-  <!-- Debug panel (for internal testing) -->
-  <div class="debug-panel" id="debug-panel" style="display:none;">
-    <h3>Agent context variables — testing</h3>
-    <div class="form-row">
-      <div class="form-group"><label>Customer name</label><input type="text" id="dv-name" value="Charles Alzon"></div>
-      <div class="form-group"><label>Property address</label><input type="text" id="dv-property_address" value="Bahnhofstrasse 12, 8001 Zürich"></div>
+    <div class="back-link" style="margin-top:2rem;">
+      <button class="ghost-link" onclick="goToPage('choose-path')">← Zurück zur Auswahl</button>
     </div>
-    <div class="form-row">
-      <div class="form-group"><label>Interest</label>
-        <select id="dv-interest">
-          <option value="Mortgage refinancing" selected>Mortgage refinancing</option>
-          <option value="Property purchase">Property purchase</option>
-          <option value="Renovation financing">Renovation financing</option>
-          <option value="General advice">General advice</option>
-        </select>
-      </div>
-      <div class="form-group"><label>Language</label>
-        <select id="dv-language_spoken">
-          <option value="en" selected>English</option>
-          <option value="de">Deutsch</option>
-          <option value="fr">Français</option>
-          <option value="it">Italiano</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row-3">
-      <div class="form-group"><label>Months to expiry</label><input type="number" id="dv-months_to_expiry" value="11"></div>
-      <div class="form-group"><label>Mortgage year</label><input type="number" id="dv-mortgage_year" value="2016"></div>
-      <div class="form-group"><label>Current rate (%)</label><input type="text" id="dv-current_rate" value="1.45"></div>
-    </div>
-    <div class="form-row">
-      <div class="form-group"><label>Advisor name</label><input type="text" id="dv-advisor_name" value="Stefan Heitmann"></div>
-      <div class="form-group"><label>Brand name</label><input type="text" id="dv-brand_name" value="MoneyPark"></div>
-    </div>
-    <div class="form-row-3">
-      <div class="form-group"><label>Prior contact</label>
-        <select id="dv-PRIOR_CONTACT"><option value="false" selected>No</option><option value="true">Yes</option></select>
-      </div>
-      <div class="form-group"><label>Lead ID</label><input type="text" id="dv-leadId" value="demo-lead-001"></div>
-      <div class="form-group"><label>Agent ID</label><input type="text" id="dv-agent_id" value="agent_0301khnwgrw0fkpbhf4am3f8npdx" style="font-size:0.7rem;"></div>
-    </div>
-  </div>
-
-  <!-- Footer -->
-  <div class="mp-footer">
-    <div class="mp-footer-inner">
-      <div class="mp-footer-col"><strong>Jobs &amp; careers</strong><a href="#">Careers at MoneyPark</a><a href="#">Careers at Helvetia</a></div>
-      <div class="mp-footer-col"><strong>News &amp; media</strong><a href="#">Press releases</a><a href="#">Publications</a><a href="#">Blog</a></div>
-      <div class="mp-footer-col"><strong>About us</strong><a href="#">Partners of MoneyPark</a><a href="#">B2B solutions</a></div>
-      <div class="header-brand" style="margin-left:auto;">
-        <div class="header-logo" style="font-size:1rem;">MONEY<svg class="logo-icon" viewBox="0 0 24 24" style="width:16px;height:16px;"><path d="M12 2C8 2 4 6 4 10c0 6 8 12 8 12s8-6 8-12c0-4-4-8-8-8z"/></svg>PARK</div>
-        <div class="header-helvetia">a company of<br><strong>helvetia</strong></div>
-      </div>
-    </div>
-    <div class="mp-footer-bottom">&copy; MoneyPark AG &middot; Z&uuml;richstrasse 130 &middot; CH-8600 D&uuml;bendorf &middot; +41 58 280 10 00<br><a href="#">Imprint</a> &middot; <a href="#">Legal info</a> &middot; <a href="#">Privacy policy</a></div>
-    <p class="co-brand" style="font-size:0.6875rem;color:var(--mp-sea);text-align:center;margin-top:0.75rem;">In cooperation with PriceHubble</p>
   </div>
 </div>
 
-<!-- ==================== PAGE: CALLBACK CONFIRMED ==================== -->
-<div class="page" id="page-callback-confirmed">
+<!-- ================ PAGE 3A: SELF-ONBOARD ================ -->
+<div class="page" id="page-self-onboard">
   <header class="header">
-    <div class="header-brand"><div class="header-logo">MONEY<svg class="logo-icon" viewBox="0 0 24 24"><path d="M12 2C8 2 4 6 4 10c0 6 8 12 8 12s8-6 8-12c0-4-4-8-8-8z"/></svg>PARK</div><div class="header-helvetia">a company of<br><strong>helvetia</strong></div></div>
-    <div class="header-right"><a href="tel:+41442007597" class="header-phone"><svg class="phone-icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>+41 44 200 75 97</a></div>
+    <div class="header-logo">Baufi<span>24</span></div>
+    <a href="tel:08008084000" class="header-phone">
+      <svg class="phone-icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+      0800 / 808 4000
+    </a>
   </header>
+
+  <div class="inner-page" style="max-width:480px;">
+
+    <!-- Progress dots -->
+    <div class="wizard-progress" id="wizard-progress"></div>
+
+    <!-- STEP 1: Finanzierungsvorhaben -->
+    <div class="wizard-step active" data-step="0">
+      <p class="step-counter">Schritt 1 von 6</p>
+      <h2 class="wizard-question">Was möchten Sie finanzieren?</h2>
+      <p class="wizard-sub">Wählen Sie Ihr Vorhaben — alle Optionen sind kostenlos und unverbindlich.</p>
+      <div class="form-card" style="margin-bottom:1.5rem; padding:1.25rem;">
+        <div class="form-group" style="margin-bottom:0;">
+          <label>Adresse der Immobilie <span class="optional">(optional)</span></label>
+          <input type="text" id="wiz-address" placeholder="z.B. Musterstraße 12, 80331 München">
+        </div>
+      </div>
+      <div class="option-tiles">
+        <div class="option-tile" data-interest="Immobilienkauf" onclick="wizardSelect(this, 0)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+          Immobilienkauf
+        </div>
+        <div class="option-tile" data-interest="Anschlussfinanzierung" onclick="wizardSelect(this, 0)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M21 12V7H5a2 2 0 010-4h14v4"/><path d="M3 5v14a2 2 0 002 2h16v-5"/><path d="M18 12a2 2 0 000 4h4v-4z"/></svg></div>
+          Anschluss&shy;finanzierung
+        </div>
+        <div class="option-tile" data-interest="Modernisierung" onclick="wizardSelect(this, 0)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/></svg></div>
+          Modernisierung
+        </div>
+        <div class="option-tile" data-interest="Neubau" onclick="wizardSelect(this, 0)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></div>
+          Neubau
+        </div>
+      </div>
+      <div class="wizard-nav">
+        <button class="btn-wizard-back" onclick="goToPage('choose-path')">← Zurück</button>
+        <span></span>
+      </div>
+    </div>
+
+    <!-- STEP 2: Immobilienart -->
+    <div class="wizard-step" data-step="1">
+      <p class="step-counter">Schritt 2 von 6</p>
+      <h2 class="wizard-question">Um welche Immobilienart handelt es sich?</h2>
+      <p class="wizard-sub">Wählen Sie den Typ der Immobilie aus.</p>
+      <div class="option-tiles">
+        <div class="option-tile" onclick="wizardSelect(this, 1)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="9" y1="6" x2="9" y2="6.01"/><line x1="15" y1="6" x2="15" y2="6.01"/><line x1="9" y1="10" x2="9" y2="10.01"/><line x1="15" y1="10" x2="15" y2="10.01"/><line x1="9" y1="14" x2="9" y2="14.01"/><line x1="15" y1="14" x2="15" y2="14.01"/><path d="M9 22v-4h6v4"/></svg></div>
+          Eigentums&shy;wohnung
+        </div>
+        <div class="option-tile" onclick="wizardSelect(this, 1)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+          Einfamilienhaus
+        </div>
+        <div class="option-tile" onclick="wizardSelect(this, 1)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><rect x="1" y="6" width="22" height="16" rx="2"/><path d="M1 10h22"/><path d="M8 6v16"/><path d="M16 6v16"/><path d="M1 6l11-4 11 4"/></svg></div>
+          Mehrfamilienhaus
+        </div>
+        <div class="option-tile" onclick="wizardSelect(this, 1)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg></div>
+          Grundstück
+        </div>
+      </div>
+      <div class="wizard-nav">
+        <button class="btn-wizard-back" onclick="wizardBack()">← Zurück</button>
+        <span></span>
+      </div>
+    </div>
+
+    <!-- STEP 3: Nutzung -->
+    <div class="wizard-step" data-step="2">
+      <p class="step-counter">Schritt 3 von 6</p>
+      <h2 class="wizard-question">Wie wird die Immobilie genutzt?</h2>
+      <p class="wizard-sub">Dies beeinflusst die Finanzierungsbedingungen.</p>
+      <div class="option-tiles option-tiles-3">
+        <div class="option-tile" onclick="wizardSelect(this, 2)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          Eigennutzung
+        </div>
+        <div class="option-tile" onclick="wizardSelect(this, 2)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+          Kapitalanlage
+        </div>
+        <div class="option-tile" onclick="wizardSelect(this, 2)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
+          Teilweise vermietet
+        </div>
+      </div>
+      <div class="wizard-nav">
+        <button class="btn-wizard-back" onclick="wizardBack()">← Zurück</button>
+        <span></span>
+      </div>
+    </div>
+
+    <!-- STEP 4: Kaufpreis -->
+    <div class="wizard-step" data-step="3">
+      <p class="step-counter">Schritt 4 von 6</p>
+      <h2 class="wizard-question">Wie hoch ist der Kaufpreis?</h2>
+      <p class="wizard-sub">Ein ungefährer Wert genügt — wir helfen Ihnen bei der genauen Berechnung.</p>
+      <div class="form-card">
+        <div class="form-group">
+          <label>Kaufpreis / Immobilienwert</label>
+          <input type="text" id="wiz-price" placeholder="z.B. 450.000 €" inputmode="numeric">
+        </div>
+        <div class="form-group">
+          <label>Eigenkapital <span class="optional">(ca.)</span></label>
+          <input type="text" id="wiz-equity" placeholder="z.B. 80.000 €" inputmode="numeric">
+        </div>
+        <button class="btn-primary" onclick="wizardNext(3)">Weiter →</button>
+      </div>
+      <div class="wizard-nav">
+        <button class="btn-wizard-back" onclick="wizardBack()">← Zurück</button>
+        <span></span>
+      </div>
+    </div>
+
+    <!-- STEP 5: Wann benötigen Sie die Finanzierung? -->
+    <div class="wizard-step" data-step="4">
+      <p class="step-counter">Schritt 5 von 6</p>
+      <h2 class="wizard-question">Wann benötigen Sie die Finanzierung?</h2>
+      <p class="wizard-sub">So können wir die Dringlichkeit besser einschätzen.</p>
+      <div class="option-tiles">
+        <div class="option-tile" onclick="wizardSelect(this, 4)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          So schnell wie möglich
+        </div>
+        <div class="option-tile" onclick="wizardSelect(this, 4)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+          In 1–3 Monaten
+        </div>
+        <div class="option-tile" onclick="wizardSelect(this, 4)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></div>
+          In 3–12 Monaten
+        </div>
+        <div class="option-tile" onclick="wizardSelect(this, 4)">
+          <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></div>
+          Nur informieren
+        </div>
+      </div>
+      <div class="wizard-nav">
+        <button class="btn-wizard-back" onclick="wizardBack()">← Zurück</button>
+        <span></span>
+      </div>
+    </div>
+
+    <!-- STEP 6: Kontaktdaten -->
+    <div class="wizard-step" data-step="5">
+      <p class="step-counter">Schritt 6 von 6</p>
+      <h2 class="wizard-question">Fast geschafft! Wohin senden wir Ihr Angebot?</h2>
+      <p class="wizard-sub">Als Bonus erhalten Sie Ihr persönliches Immobilien-Portal mit Marktwert und Vergleichsdaten per E-Mail.</p>
+      <div class="form-card">
+        <div class="form-group">
+          <label>Vor- und Nachname</label>
+          <input type="text" placeholder="Max Mustermann">
+        </div>
+        <div class="form-group">
+          <label>E-Mail-Adresse</label>
+          <input type="email" placeholder="max@beispiel.de">
+        </div>
+        <div class="form-group">
+          <label>Telefonnummer <span class="optional">(optional)</span></label>
+          <input type="tel" placeholder="+49 170 1234567">
+        </div>
+        <div class="dsgvo-notice">
+          Ihre Daten werden gemäß der Datenschutzgrundverordnung (DSGVO) verarbeitet und nicht an Dritte verkauft. Sie dienen ausschließlich dazu, Ihnen bestmöglich weiterzuhelfen. Weitere Informationen finden Sie in unserer <a href="#">Datenschutzerklärung</a>.
+        </div>
+        <button class="btn-primary" onclick="goToPage('callback-confirmed-self')">Angebot anfordern →</button>
+      </div>
+      <div class="wizard-nav">
+        <button class="btn-wizard-back" onclick="wizardBack()">← Zurück</button>
+        <span></span>
+      </div>
+    </div>
+
+  </div>
+
+  <button class="ai-help-fab" id="self-onboard-fab" onclick="launchAgentFromWizard()">
+    <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+    Hilfe? KI-Assistent
+  </button>
+</div>
+
+<!-- ================ PAGE 3B: AI ASSISTANT ================ -->
+<div class="page" id="page-ai-assistant">
+  <header class="header">
+    <div class="header-logo">Baufi<span>24</span></div>
+    <a href="tel:08008084000" class="header-phone">
+      <svg class="phone-icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+      0800 / 808 4000
+    </a>
+  </header>
+
+  <div class="inner-page" style="text-align:center; max-width:640px;">
+    <div class="ai-disclosure" style="text-align:left; margin-top:2rem;">
+      <strong>Hinweis:</strong> Sie sprechen mit einem KI-gestützten Assistenten, nicht mit einem Menschen. Ihre Daten werden gemäß DSGVO geschützt.
+    </div>
+    <p style="font-size:0.9375rem; color:var(--dark-gray); margin-bottom:1.5rem; text-align:left;">Fragen Sie z.B.: <em>„Was ist eine Anschlussfinanzierung?"</em>, <em>„Wie viel Eigenkapital brauche ich?"</em> oder <em>„Welche Unterlagen benötige ich?"</em></p>
+
+    <div id="ai-vars-form" style="text-align:left; margin-bottom:1.5rem;">
+      <h3 style="font-size:0.9375rem; font-weight:600; margin-bottom:1rem; color:var(--dark-blue);">Kontext <span style="font-weight:400; color:var(--dark-gray); font-size:0.8125rem;">— optional, vor dem Start anpassen</span></h3>
+      <div class="form-row">
+        <div class="form-group"><label>Name <span class="optional">(falls bekannt)</span></label><input type="text" id="dv-name" value=""></div>
+        <div class="form-group">
+          <label>Interesse <span class="optional">(falls bekannt)</span></label>
+          <div class="select-wrapper"><select id="dv-interest_type">
+            <option value="">— nicht bekannt —</option>
+            <option value="Immobilienkauf">Immobilienkauf</option>
+            <option value="Anschlussfinanzierung">Anschlussfinanzierung</option>
+            <option value="Modernisierung">Modernisierung</option>
+            <option value="Neubau">Neubau</option>
+            <option value="Allgemeine Beratung">Allgemeine Beratung</option>
+          </select></div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Immobilienadresse <span class="optional">(falls bekannt)</span></label><input type="text" id="dv-property" placeholder="z.B. Musterstraße 12, 80331 München"></div>
+        <div class="form-group">
+          <label>Beschäftigung <span class="optional">(falls bekannt)</span></label>
+          <div class="select-wrapper"><select id="dv-employment">
+            <option value="">— nicht bekannt —</option>
+            <option value="Angestellter">Angestellte/r</option>
+            <option value="Beamter">Beamte/r</option>
+            <option value="Selbstständiger">Selbstständig</option>
+            <option value="Freiberufler">Freiberufler/in</option>
+            <option value="Rentner">Rentner/in</option>
+            <option value="Sonstiges">Sonstiges</option>
+          </select></div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Quelle</label>
+          <div class="select-wrapper"><select id="dv-source">
+            <option value="self-onboard">Self-Onboarding</option>
+            <option value="form">Kontaktformular</option>
+            <option value="call">Call Center (0800)</option>
+          </select></div>
+        </div>
+        <div class="form-group"><label>Nachricht <span class="optional">(Kontext)</span></label><input type="text" id="dv-message" placeholder="Freitext vom Formular"></div>
+      </div>
+      <div class="form-row-3">
+        <div class="form-group"><label>Markenname</label><input type="text" id="dv-brand_name" value="Baufi24"></div>
+        <div class="form-group"><label>KI-Name</label><input type="text" id="dv-ai_agent_name" value="Mia"></div>
+        <div class="form-group"><label>Agent ID</label><input type="text" id="dv-agent_id" value="agent_8101kmdjapcrf9ttb2jb3q922wq4" style="font-size:0.75rem;"></div>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="launchAgent()" id="launch-agent-btn" style="width:100%; margin-bottom:0.5rem; background:var(--dark-blue); color:var(--white);">
+      <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+      KI-Gespräch starten
+    </button>
+
+    <div id="ai-widget-container" style="margin:1.5rem 0;"></div>
+
+    <div class="back-link" style="margin-top:1rem;"><button class="ghost-link" onclick="goToPage('choose-path')">← Zurück zur Auswahl</button></div>
+  </div>
+</div>
+
+<!-- ================ PAGE 3C: HUMAN ADVISOR ================ -->
+<div class="page" id="page-human-advisor">
+  <header class="header">
+    <div class="header-logo">Baufi<span>24</span></div>
+    <a href="tel:08008084000" class="header-phone">
+      <svg class="phone-icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+      0800 / 808 4000
+    </a>
+  </header>
+
+  <div class="inner-page">
+    <div class="page-heading">
+      <h1 style="font-size:1.75rem;">Persönliche Beratung — wir rufen Sie an</h1>
+      <p>Ein erfahrener Baufi24 Finanzierungsberater wird sich innerhalb von 24 Stunden bei Ihnen melden — kostenlos und unverbindlich.</p>
+    </div>
+
+    <div class="form-card" style="margin-top:1.5rem;">
+      <div class="form-group">
+        <label>Vor- und Nachname</label>
+        <input type="text" placeholder="Max Mustermann">
+      </div>
+      <div class="form-group">
+        <label>E-Mail-Adresse</label>
+        <input type="email" placeholder="max@beispiel.de">
+      </div>
+      <div class="form-group">
+        <label>Telefonnummer</label>
+        <input type="tel" placeholder="+49 170 1234567">
+      </div>
+      <div class="form-group">
+        <label>Wann passt es Ihnen am besten? <span class="optional">(optional)</span></label>
+        <div class="select-wrapper">
+          <select>
+            <option value="" disabled selected>Bitte wählen</option>
+            <option>Vormittags (9–12 Uhr)</option>
+            <option>Nachmittags (12–17 Uhr)</option>
+            <option>Abends (17–19 Uhr)</option>
+            <option>Egal</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Gibt es etwas, das Sie uns vorab mitteilen möchten? <span class="optional">(optional)</span></label>
+        <textarea rows="3" placeholder="z.B. besondere Wünsche, Zeitdruck, etc."></textarea>
+      </div>
+      <div class="dsgvo-notice">
+        Ihre Daten werden gemäß der Datenschutzgrundverordnung (DSGVO) verarbeitet und nicht an Dritte verkauft. Sie dienen ausschließlich dazu, Ihnen bestmöglich weiterzuhelfen. Weitere Informationen finden Sie in unserer <a href="#">Datenschutzerklärung</a>.
+      </div>
+      <button class="btn-primary" onclick="goToPage('callback-confirmed-human')">Rückruf vereinbaren →</button>
+    </div>
+    <div class="back-link">
+      <button class="ghost-link" onclick="goToPage('choose-path')">← Zurück zur Auswahl</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================ PAGE 4: CALLBACK CONFIRMED (SELF) ================ -->
+<div class="page" id="page-callback-confirmed-self">
+  <header class="header">
+    <div class="header-logo">Baufi<span>24</span></div>
+    <a href="tel:08008084000" class="header-phone">
+      <svg class="phone-icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+      0800 / 808 4000
+    </a>
+  </header>
+
   <div class="confirm-section">
-    <div class="confirm-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-    <h1 id="confirm-title">Thank you — we'll be in touch!</h1>
-    <p class="confirm-body" id="confirm-body">A MoneyPark advisor will call you at your preferred time. In the meantime, you'll receive your personal property cockpit by email.</p>
-    <a href="https://www.moneypark.ch/ch/mp/en/home.html" class="btn-secondary">Back to MoneyPark website &rarr;</a>
+    <div class="confirm-icon">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h1>Vielen Dank — Ihr Angebot wird vorbereitet!</h1>
+    <p class="confirm-body">Wir haben Ihre Angaben erhalten. Ein Baufi24 Berater wird auf dieser Basis ein individuelles Finanzierungsangebot für Sie erstellen und sich bei Ihnen melden.</p>
+    <div class="portal-teaser">Als Bonus: Sie erhalten in Kürze per E-Mail Ihr persönliches Immobilien-Portal mit Marktwert, Vergleichsdaten und Nachbarschaftsinfos.</div>
+    <a href="https://baufi24.de" class="btn-secondary">Zurück zur Baufi24 Website →</a>
   </div>
 </div>
 
-<!-- Debug toggle -->
-<button class="debug-toggle" id="debug-toggle-btn" onclick="toggleDebug()">DEV</button>
+<!-- ================ PAGE 4: CALLBACK CONFIRMED (HUMAN) ================ -->
+<div class="page" id="page-callback-confirmed-human">
+  <header class="header">
+    <div class="header-logo">Baufi<span>24</span></div>
+    <a href="tel:08008084000" class="header-phone">
+      <svg class="phone-icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+      0800 / 808 4000
+    </a>
+  </header>
+
+  <div class="confirm-section">
+    <div class="confirm-icon">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h1>Vielen Dank — wir melden uns bei Ihnen!</h1>
+    <p class="confirm-body">Ein Baufi24 Berater wird sich innerhalb von 24 Stunden bei Ihnen melden — persönlich, kostenlos und unverbindlich.</p>
+    <div class="portal-teaser">Als Bonus: Sie erhalten per E-Mail Ihr persönliches Immobilien-Portal mit Marktwert und Vergleichsdaten zu Ihrer Immobilie.</div>
+    <a href="https://baufi24.de" class="btn-secondary">Zurück zur Baufi24 Website →</a>
+  </div>
+</div>
+
+<!-- Loading overlay -->
+<div class="loading-overlay" id="loading-overlay">
+  <div class="loading-card">
+    <div class="spinner"></div>
+    <p style="font-weight:600; font-size:1.0625rem;">Anfrage wird übermittelt…</p>
+    <p style="color:var(--dark-gray); font-size:0.875rem; margin-top:0.5rem;">Bitte warten Sie einen Moment.</p>
+  </div>
+</div>
 
 <script>
-  var CTX = {};
-  var aiMode = 'voice';
-  var widgetLaunched = false;
-
-  function parseTokenFromUrl() {
-    var params = new URLSearchParams(window.location.search);
-    var token = params.get('token');
-    var action = params.get('action');
-    if (token) {
-      try {
-        var decoded = JSON.parse(atob(token.replace(/-/g, '+').replace(/_/g, '/')));
-        CTX.name = decoded.n || '';
-        CTX.email = decoded.e || '';
-        CTX.phone = decoded.p || '';
-        CTX.interest = decoded.i || 'Mortgage refinancing';
-        CTX.propertyAddress = decoded.a || '';
-        CTX.mortgageYear = decoded.my || '';
-        CTX.monthsToExpiry = decoded.me || '';
-        CTX.currentRate = decoded.cr || '';
-      } catch(e) { /* invalid token, use defaults */ }
-    }
-
-    var leadId = params.get('leadId') || params.get('lead_id') || 'demo-lead-001';
-    CTX.leadId = leadId;
-    CTX.action = action;
-
-    if (CTX.name) {
-      var firstName = CTX.name.split(' ')[0];
-      var heroTitle = document.getElementById('hero-title');
-      if (heroTitle) heroTitle.textContent = firstName + ', prepare your mortgage renewal with Anna';
-      var dvName = document.getElementById('dv-name');
-      if (dvName) dvName.value = CTX.name;
-      var cbName = document.getElementById('cb-name');
-      if (cbName) cbName.value = CTX.name;
-    }
-    if (CTX.phone) {
-      var cbPhone = document.getElementById('cb-phone');
-      if (cbPhone) cbPhone.value = CTX.phone;
-    }
-    if (CTX.propertyAddress) {
-      var dvAddr = document.getElementById('dv-property_address');
-      if (dvAddr) dvAddr.value = CTX.propertyAddress;
-    }
-    if (CTX.interest) {
-      var dvInt = document.getElementById('dv-interest');
-      if (dvInt) {
-        for (var i = 0; i < dvInt.options.length; i++) {
-          if (dvInt.options[i].value === CTX.interest) { dvInt.selectedIndex = i; break; }
-        }
-      }
-    }
-    if (CTX.monthsToExpiry) {
-      var dvM = document.getElementById('dv-months_to_expiry');
-      if (dvM) dvM.value = CTX.monthsToExpiry;
-    }
-    if (CTX.mortgageYear) {
-      var dvY = document.getElementById('dv-mortgage_year');
-      if (dvY) dvY.value = CTX.mortgageYear;
-    }
-    if (CTX.currentRate) {
-      var dvR = document.getElementById('dv-current_rate');
-      if (dvR) dvR.value = CTX.currentRate;
-    }
-    if (CTX.leadId && CTX.leadId !== 'demo-lead-001') {
-      var dvL = document.getElementById('dv-leadId');
-      if (dvL) dvL.value = CTX.leadId;
-    }
-
-    if (action === 'callback') {
-      setTimeout(function() {
-        var cbSection = document.querySelector('.callback-section');
-        if (cbSection) cbSection.scrollIntoView({ behavior: 'smooth' });
-      }, 500);
-    }
-  }
-
-  function acceptConsent() {
-    document.getElementById('consent-modal').classList.add('hidden');
-    document.getElementById('page-landing').classList.add('active');
-  }
-
-  document.getElementById('consent-checkbox').addEventListener('change', function() {
-    document.getElementById('consent-accept-btn').disabled = !this.checked;
-  });
-
-  function setAiMode(mode) {
-    aiMode = mode;
-    document.getElementById('mode-voice').classList.toggle('active', mode === 'voice');
-    document.getElementById('mode-text').classList.toggle('active', mode === 'text');
-  }
-
-  function getAgentVars() {
-    return {
-      name: document.getElementById('dv-name').value,
-      brand_name: document.getElementById('dv-brand_name').value,
-      advisor_name: document.getElementById('dv-advisor_name').value,
-      PRIOR_CONTACT: document.getElementById('dv-PRIOR_CONTACT').value,
-      mortgage_year: document.getElementById('dv-mortgage_year').value,
-      months_to_expiry: document.getElementById('dv-months_to_expiry').value,
-      current_rate: document.getElementById('dv-current_rate').value,
-      property_address: document.getElementById('dv-property_address').value,
-      interest: document.getElementById('dv-interest').value,
-      language_spoken: document.getElementById('dv-language_spoken').value,
-      leadId: document.getElementById('dv-leadId').value
-    };
-  }
-
   function launchAgent() {
-    if (widgetLaunched) return;
-    widgetLaunched = true;
-
-    var vars = getAgentVars();
-    var agentId = document.getElementById('dv-agent_id').value;
-    var langCode = document.getElementById('dv-language_spoken').value;
-    var customerName = document.getElementById('dv-name').value;
-
-    var greetings = {
-      en: 'Hello ' + customerName + '?',
-      de: 'Hallo ' + customerName + '?',
-      fr: 'Bonjour ' + customerName + ' ?',
-      it: 'Buongiorno ' + customerName + '?'
+    var vars = {
+      brand_name: document.getElementById('dv-brand_name').value,
+      ai_agent_name: document.getElementById('dv-ai_agent_name').value,
+      name: document.getElementById('dv-name').value || '',
+      interest_type: document.getElementById('dv-interest_type').value || '',
+      property: document.getElementById('dv-property').value || '',
+      employment: document.getElementById('dv-employment').value || '',
+      message: document.getElementById('dv-message').value || '',
+      source: document.getElementById('dv-source').value || ''
     };
-    var firstMsg = greetings[langCode] || greetings['en'];
-
+    var agentId = document.getElementById('dv-agent_id').value;
+    var customerName = vars.name;
+    var firstMsg = customerName ? ('Hallo ' + customerName + '!') : 'Hallo! Wie kann ich Ihnen helfen?';
     var container = document.getElementById('ai-widget-container');
-    container.innerHTML = '<elevenlabs-convai agent-id="' + agentId
-      + '" server-location="eu-residency" language="' + langCode
-      + '" first-message="' + firstMsg.replace(/"/g, '&quot;')
-      + '" dynamic-variables=\'' + JSON.stringify(vars) + '\'></elevenlabs-convai>';
-
-    document.getElementById('start-ai-btn').style.display = 'none';
-    document.querySelector('.ai-mode-toggle').style.display = 'none';
+    container.innerHTML = '<elevenlabs-convai agent-id="' + agentId + '" server-location="eu-residency" language="de" first-message="' + firstMsg.replace(/"/g, '&quot;') + '" dynamic-variables=\'' + JSON.stringify(vars) + '\'></elevenlabs-convai>';
+    document.getElementById('ai-vars-form').style.display = 'none';
+    document.getElementById('launch-agent-btn').style.display = 'none';
   }
 
-  function submitCallback() {
-    var name = document.getElementById('cb-name').value.trim();
-    var phone = document.getElementById('cb-phone').value.trim();
-    if (!name || !phone) {
-      alert('Please provide your name and phone number.');
-      return;
+  function launchAgentFromForm() {
+    var formName = document.getElementById('form-name');
+    var formInterest = document.getElementById('form-interest');
+    var formEmployment = document.getElementById('form-employment');
+    var formMessage = document.getElementById('form-message');
+    var vars = {
+      brand_name: 'Baufi24',
+      ai_agent_name: 'Mia',
+      name: formName ? formName.value.trim() : '',
+      interest_type: (formInterest && formInterest.value) ? formInterest.value : '',
+      property: '',
+      employment: (formEmployment && formEmployment.value) ? formEmployment.value : '',
+      message: formMessage ? formMessage.value.trim() : '',
+      source: 'form'
+    };
+    var agentId = 'agent_8101kmdjapcrf9ttb2jb3q922wq4';
+    var customerName = vars.name;
+    var firstMsg = customerName ? ('Hallo ' + customerName + '!') : 'Hallo! Wie kann ich Ihnen helfen?';
+    var container = document.getElementById('form-ai-widget-container');
+    container.innerHTML = '<elevenlabs-convai agent-id="' + agentId + '" server-location="eu-residency" language="de" first-message="' + firstMsg.replace(/"/g, '&quot;') + '" dynamic-variables=\'' + JSON.stringify(vars) + '\'></elevenlabs-convai>';
+
+    var formCard = document.getElementById('kontakt-form-card');
+    if (formCard) {
+      formCard.style.opacity = '0.5';
+      formCard.style.pointerEvents = 'none';
     }
-    goToPage('callback-confirmed');
+    document.getElementById('form-ai-section').style.display = '';
+    document.getElementById('form-launch-agent-btn').style.display = 'none';
+    setTimeout(function() {
+      document.getElementById('form-ai-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
   }
 
-  function goToPage(pageId) {
+  function launchAgentFromWizard() {
+    var wizAddr = document.getElementById('wiz-address');
+    var selectedTile = document.querySelector('#page-self-onboard .wizard-step[data-step="0"] .option-tile.selected');
+    var interest = '';
+    if (selectedTile && selectedTile.dataset.interest) {
+      interest = selectedTile.dataset.interest;
+    }
+    var vars = {
+      brand_name: 'Baufi24',
+      ai_agent_name: 'Mia',
+      name: '',
+      interest_type: interest,
+      property: (wizAddr && wizAddr.value.trim()) ? wizAddr.value.trim() : '',
+      source: 'self-onboard'
+    };
+    var agentId = 'agent_8101kmdjapcrf9ttb2jb3q922wq4';
+    var firstMsg = 'Hallo! Wie kann ich Ihnen helfen?';
+    var existing = document.querySelector('#page-self-onboard elevenlabs-convai');
+    if (existing) existing.remove();
+    var widget = document.createElement('elevenlabs-convai');
+    widget.setAttribute('agent-id', agentId);
+    widget.setAttribute('server-location', 'eu-residency');
+    widget.setAttribute('language', 'de');
+    widget.setAttribute('first-message', firstMsg);
+    widget.setAttribute('dynamic-variables', JSON.stringify(vars));
+    document.getElementById('page-self-onboard').appendChild(widget);
+    document.getElementById('self-onboard-fab').style.display = 'none';
+  }
+
+  var currentSource = '';
+
+  function goToPage(pageId, source) {
+    if (pageId === 'self-onboard') {
+      wizardCurrentStep = 0;
+      renderWizard();
+      var existingWidget = document.querySelector('#page-self-onboard elevenlabs-convai');
+      if (existingWidget) existingWidget.remove();
+      var fab = document.getElementById('self-onboard-fab');
+      if (fab) fab.style.display = '';
+    }
+
+    if (pageId === 'form-entry') {
+      var formAiSection = document.getElementById('form-ai-section');
+      if (formAiSection) { formAiSection.style.display = 'none'; }
+      var formWidgetContainer = document.getElementById('form-ai-widget-container');
+      if (formWidgetContainer) { formWidgetContainer.innerHTML = ''; }
+      var formLaunchBtn = document.getElementById('form-launch-agent-btn');
+      if (formLaunchBtn) { formLaunchBtn.style.display = ''; }
+      var formCard = document.getElementById('kontakt-form-card');
+      if (formCard) { formCard.style.opacity = ''; formCard.style.pointerEvents = ''; }
+    }
+
+    if (pageId === 'ai-assistant') {
+      document.getElementById('ai-widget-container').innerHTML = '';
+      document.getElementById('ai-vars-form').style.display = '';
+      document.getElementById('launch-agent-btn').style.display = '';
+
+      var dvName = document.getElementById('dv-name');
+      var dvInterest = document.getElementById('dv-interest_type');
+      var dvProperty = document.getElementById('dv-property');
+      var dvEmployment = document.getElementById('dv-employment');
+      var dvMessage = document.getElementById('dv-message');
+      var dvSource = document.getElementById('dv-source');
+
+      var src = source || currentSource || 'call';
+
+      if (src === 'call') {
+        dvName.value = '';
+        dvProperty.value = '';
+        dvEmployment.selectedIndex = 0;
+        dvMessage.value = '';
+        dvInterest.selectedIndex = 0;
+        dvSource.value = 'call';
+      } else if (src === 'form') {
+        var formName = document.getElementById('form-name');
+        var formInterest = document.getElementById('form-interest');
+        var formEmployment = document.getElementById('form-employment');
+        var formMessage = document.getElementById('form-message');
+        dvName.value = formName ? formName.value.trim() : '';
+        dvProperty.value = '';
+        if (formEmployment && formEmployment.value) {
+          for (var e = 0; e < dvEmployment.options.length; e++) {
+            if (dvEmployment.options[e].value === formEmployment.value) { dvEmployment.selectedIndex = e; break; }
+          }
+        } else {
+          dvEmployment.selectedIndex = 0;
+        }
+        dvMessage.value = formMessage ? formMessage.value.trim() : '';
+        if (formInterest && formInterest.value) {
+          for (var i = 0; i < dvInterest.options.length; i++) {
+            if (dvInterest.options[i].value === formInterest.value) { dvInterest.selectedIndex = i; break; }
+          }
+        } else {
+          dvInterest.selectedIndex = 0;
+        }
+        dvSource.value = 'form';
+      } else if (src === 'self-onboard') {
+        var wizAddr = document.getElementById('wiz-address');
+        if (wizAddr && wizAddr.value.trim()) {
+          dvProperty.value = wizAddr.value.trim();
+        }
+        dvEmployment.selectedIndex = 0;
+        dvMessage.value = '';
+        var selectedTile = document.querySelector('#page-self-onboard .wizard-step[data-step="0"] .option-tile.selected');
+        if (selectedTile && selectedTile.dataset.interest) {
+          for (var j = 0; j < dvInterest.options.length; j++) {
+            if (dvInterest.options[j].value === selectedTile.dataset.interest) { dvInterest.selectedIndex = j; break; }
+          }
+        } else {
+          dvInterest.selectedIndex = 1;
+        }
+        dvSource.value = 'self-onboard';
+      }
+      currentSource = src;
+    }
+
     document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
     var target = document.getElementById('page-' + pageId);
-    if (target) { target.classList.add('active'); window.scrollTo(0, 0); }
+    if (target) {
+      target.classList.add('active');
+      window.scrollTo(0, 0);
+    }
   }
 
-  function toggleDebug() {
-    var panel = document.getElementById('debug-panel');
-    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+  // --- Wizard logic for self-onboard ---
+  var WIZARD_TOTAL = 6;
+  var wizardCurrentStep = 0;
+
+  function renderWizard() {
+    var bar = document.getElementById('wizard-progress');
+    if (!bar) return;
+    var html = '';
+    for (var i = 0; i < WIZARD_TOTAL; i++) {
+      var cls = i < wizardCurrentStep ? 'done' : (i === wizardCurrentStep ? 'active' : '');
+      html += '<div class="step-dot ' + cls + '"></div>';
+      if (i < WIZARD_TOTAL - 1) {
+        html += '<div class="step-line ' + (i < wizardCurrentStep ? 'done' : '') + '"></div>';
+      }
+    }
+    bar.innerHTML = html;
+
+    document.querySelectorAll('#page-self-onboard .wizard-step').forEach(function(el) {
+      el.classList.remove('active');
+    });
+    var active = document.querySelector('#page-self-onboard .wizard-step[data-step="' + wizardCurrentStep + '"]');
+    if (active) active.classList.add('active');
   }
 
-  parseTokenFromUrl();
-
-  var skipConsent = new URLSearchParams(window.location.search).get('consent');
-  if (skipConsent === 'skip') {
-    document.getElementById('consent-modal').classList.add('hidden');
-    document.getElementById('page-landing').classList.add('active');
+  function wizardSelect(tile, step) {
+    tile.parentElement.querySelectorAll('.option-tile').forEach(function(t) {
+      t.classList.remove('selected');
+    });
+    tile.classList.add('selected');
+    setTimeout(function() {
+      wizardNext(step);
+    }, 250);
   }
+
+  function wizardNext(fromStep) {
+    if (fromStep < WIZARD_TOTAL - 1) {
+      wizardCurrentStep = fromStep + 1;
+      renderWizard();
+      window.scrollTo(0, 0);
+    }
+  }
+
+  function wizardBack() {
+    if (wizardCurrentStep > 0) {
+      wizardCurrentStep--;
+      renderWizard();
+      window.scrollTo(0, 0);
+    }
+  }
+
+  // Initialize wizard on page load
+  renderWizard();
+
+  (function() {
+    var params = new URLSearchParams(window.location.search);
+    var page = params.get('page');
+    if (page) {
+      document.querySelectorAll('.page').forEach(function(p) { p.classList.remove('active'); });
+      var target = document.getElementById('page-' + page);
+      if (target) target.classList.add('active');
+    }
+  })();
 </script>
+
 </body>
 </html>
