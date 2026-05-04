@@ -901,6 +901,30 @@
 </head>
 <body>
 
+<!-- ================ DEV: Voice selector (testing only) ================ -->
+<div id="voice-selector" style="position:fixed; top:12px; right:12px; z-index:9999; background:rgba(255,255,255,0.95); border:1px solid #d4d4d8; border-radius:10px; padding:10px 12px; box-shadow:0 4px 12px rgba(0,0,0,0.08); font-family:-apple-system,system-ui,sans-serif; font-size:0.8125rem; max-width:260px;">
+  <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+    <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#22c55e;"></span>
+    <strong style="color:#18181b;">Stimme testen</strong>
+  </div>
+  <select id="voice-selector-dropdown" style="width:100%; padding:6px 8px; border:1px solid #d4d4d8; border-radius:6px; font-size:0.8125rem; background:white; cursor:pointer;" onchange="setSelectedVoiceKey(this.value); console.log('Voice switched to:', this.value);">
+    <option value="anna">Anna (Standard, weiblich)</option>
+    <option value="chris">Chris Norddeutscher (männlich)</option>
+    <option value="maya">Maya (Supportive, weiblich)</option>
+  </select>
+  <div style="font-size:0.6875rem; color:#71717a; margin-top:6px; line-height:1.3;">
+    Auswahl wird beim nächsten Start des Agenten angewendet. <a href="javascript:void(0)" onclick="document.getElementById('voice-selector').style.display='none'" style="color:#0e6dca;">Ausblenden</a>
+  </div>
+</div>
+<script>
+  (function() {
+    document.addEventListener('DOMContentLoaded', function() {
+      var dd = document.getElementById('voice-selector-dropdown');
+      if (dd) dd.value = getSelectedVoiceKey();
+    });
+  })();
+</script>
+
 <!-- ================ PAGE 1: CHOOSE YOUR ENTRY POINT ================ -->
 <div class="page active" id="page-choose-path">
   <header class="header">
@@ -1506,6 +1530,51 @@
 </div>
 
 <script>
+  /* ============================================================
+     ElevenLabs config — single source of truth
+     ============================================================ */
+  var BAUFI24_CONFIG = {
+    AGENT_ID: 'agent_8101kmdjapcrf9ttb2jb3q922wq4',
+    VOICES: {
+      anna:  { id: 'DEZHhPbmb8LVZmWufkCh', label: 'Anna (Standard, weiblich)' },
+      chris: { id: 'j46AY0iVY3oHcnZbgEJg', label: 'Chris Norddeutscher (männlich)' },
+      maya:  { id: 'MGG5Irb57ATHvyIeTEYo', label: 'Maya (Supportive, weiblich)' }
+    },
+    DEFAULT_VOICE: 'anna',
+    LANGUAGE: 'de',
+    SERVER: 'eu-residency'
+  };
+
+  function getSelectedVoiceKey() {
+    try {
+      var saved = localStorage.getItem('baufi24-voice');
+      if (saved && BAUFI24_CONFIG.VOICES[saved]) return saved;
+    } catch (e) {}
+    return BAUFI24_CONFIG.DEFAULT_VOICE;
+  }
+
+  function setSelectedVoiceKey(key) {
+    if (!BAUFI24_CONFIG.VOICES[key]) return;
+    try { localStorage.setItem('baufi24-voice', key); } catch (e) {}
+    var label = document.getElementById('voice-selector-label');
+    if (label) label.textContent = BAUFI24_CONFIG.VOICES[key].label;
+  }
+
+  function getOverrideVoiceId() {
+    var key = getSelectedVoiceKey();
+    return BAUFI24_CONFIG.VOICES[key].id;
+  }
+
+  function buildWidgetHTML(agentId, firstMsg, vars) {
+    return '<elevenlabs-convai'
+      + ' agent-id="' + agentId + '"'
+      + ' server-location="' + BAUFI24_CONFIG.SERVER + '"'
+      + ' language="' + BAUFI24_CONFIG.LANGUAGE + '"'
+      + ' override-voice-id="' + getOverrideVoiceId() + '"'
+      + ' first-message="' + firstMsg.replace(/"/g, '&quot;') + '"'
+      + ' dynamic-variables=\'' + JSON.stringify(vars) + '\'></elevenlabs-convai>';
+  }
+
   function launchAgent() {
     var vars = {
       brand_name: document.getElementById('dv-brand_name').value,
@@ -1517,11 +1586,11 @@
       message: document.getElementById('dv-message').value || '',
       source: document.getElementById('dv-source').value || ''
     };
-    var agentId = document.getElementById('dv-agent_id').value;
+    var agentId = document.getElementById('dv-agent_id').value || BAUFI24_CONFIG.AGENT_ID;
     var customerName = vars.name;
-    var firstMsg = customerName ? ('Hallo ' + customerName + '!') : 'Hallo! Wie kann ich Ihnen helfen?';
+    var firstMsg = customerName ? ('Guten Tag, ' + customerName + '! Wie kann ich Ihnen helfen?') : 'Guten Tag! Wie kann ich Ihnen helfen?';
     var container = document.getElementById('ai-widget-container');
-    container.innerHTML = '<elevenlabs-convai agent-id="' + agentId + '" server-location="eu-residency" language="de" first-message="' + firstMsg.replace(/"/g, '&quot;') + '" dynamic-variables=\'' + JSON.stringify(vars) + '\'></elevenlabs-convai>';
+    container.innerHTML = buildWidgetHTML(agentId, firstMsg, vars);
     document.getElementById('ai-vars-form').style.display = 'none';
     document.getElementById('launch-agent-btn').style.display = 'none';
   }
@@ -1541,11 +1610,11 @@
       message: formMessage ? formMessage.value.trim() : '',
       source: 'form'
     };
-    var agentId = 'agent_8101kmdjapcrf9ttb2jb3q922wq4';
+    var agentId = BAUFI24_CONFIG.AGENT_ID;
     var customerName = vars.name;
-    var firstMsg = customerName ? ('Hallo ' + customerName + '!') : 'Hallo! Wie kann ich Ihnen helfen?';
+    var firstMsg = customerName ? ('Guten Tag, ' + customerName + '! Wie kann ich Ihnen helfen?') : 'Guten Tag! Wie kann ich Ihnen helfen?';
     var container = document.getElementById('form-ai-widget-container');
-    container.innerHTML = '<elevenlabs-convai agent-id="' + agentId + '" server-location="eu-residency" language="de" first-message="' + firstMsg.replace(/"/g, '&quot;') + '" dynamic-variables=\'' + JSON.stringify(vars) + '\'></elevenlabs-convai>';
+    container.innerHTML = buildWidgetHTML(agentId, firstMsg, vars);
 
     var formCard = document.getElementById('kontakt-form-card');
     if (formCard) {
@@ -1574,14 +1643,15 @@
       property: (wizAddr && wizAddr.value.trim()) ? wizAddr.value.trim() : '',
       source: 'self-onboard'
     };
-    var agentId = 'agent_8101kmdjapcrf9ttb2jb3q922wq4';
-    var firstMsg = 'Hallo! Wie kann ich Ihnen helfen?';
+    var agentId = BAUFI24_CONFIG.AGENT_ID;
+    var firstMsg = 'Guten Tag! Wie kann ich Ihnen helfen?';
     var existing = document.querySelector('#page-self-onboard elevenlabs-convai');
     if (existing) existing.remove();
     var widget = document.createElement('elevenlabs-convai');
     widget.setAttribute('agent-id', agentId);
-    widget.setAttribute('server-location', 'eu-residency');
-    widget.setAttribute('language', 'de');
+    widget.setAttribute('server-location', BAUFI24_CONFIG.SERVER);
+    widget.setAttribute('language', BAUFI24_CONFIG.LANGUAGE);
+    widget.setAttribute('override-voice-id', getOverrideVoiceId());
     widget.setAttribute('first-message', firstMsg);
     widget.setAttribute('dynamic-variables', JSON.stringify(vars));
     document.getElementById('page-self-onboard').appendChild(widget);
