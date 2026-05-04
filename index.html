@@ -1480,11 +1480,14 @@
         </div>
         <div class="form-group"><label>Nachricht <span class="optional">(Kontext)</span></label><input type="text" id="dv-message" placeholder="Freitext vom Formular"></div>
       </div>
-      <div class="form-row-3">
+      <div class="form-row">
         <div class="form-group"><label>Markenname</label><input type="text" id="dv-brand_name" value="Baufi24"></div>
-        <div class="form-group"><label>KI-Name</label><input type="text" id="dv-ai_agent_name" value="Mia"></div>
-        <div class="form-group"><label>Agent ID</label><input type="text" id="dv-agent_id" value="agent_8101kmdjapcrf9ttb2jb3q922wq4" style="font-size:0.75rem;"></div>
+        <div class="form-group">
+          <label>KI-Name <span class="optional">(automatisch nach Stimme)</span></label>
+          <input type="text" id="dv-ai_agent_name" value="Anna" readonly style="background:#f1f5f9; cursor:not-allowed;">
+        </div>
       </div>
+      <input type="hidden" id="dv-agent_id" value="agent_8101kmdjapcrf9ttb2jb3q922wq4">
       <div class="form-row">
         <div class="form-group">
           <label>Stimme <span class="optional">(voice_id Override)</span></label>
