@@ -955,13 +955,17 @@
   }
 </style>
 <div class="voice-selector-bar" id="voice-selector-bar">
-  <span class="vs-hint">Wählen Sie eine Stimme zum Testen — wird beim nächsten Start des KI-Agenten angewendet</span>
+  <span class="vs-hint">Wählen Sie eine Stimme zum Testen — wird beim nächsten Start des KI-Agenten als <code>override-voice-id</code> angewendet</span>
   <span class="vs-label">Stimme</span>
   <select id="voice-selector-dropdown" onchange="setSelectedVoiceKey(this.value);">
     <option value="anna">Anna (Standard, weiblich)</option>
     <option value="chris">Chris Norddeutscher (männlich)</option>
     <option value="maya">Maya (Supportive, weiblich)</option>
+    <option value="laura">Laura (W&amp;W default, weiblich)</option>
+    <option value="stephan">Stephan (männlich)</option>
+    <option value="helmut">Helmut (männlich)</option>
   </select>
+  <code id="voice-id-hint-bar" style="font-family:monospace; font-size:0.6875rem; color:#94a3b8; min-width:200px;"></code>
 </div>
 <script>
   (function() {
@@ -972,6 +976,8 @@
         var el = document.getElementById(id);
         if (el) el.value = key;
       });
+      if (typeof syncVoiceIdHints === 'function') syncVoiceIdHints(key);
+      if (typeof syncAgentNameToVoice === 'function') syncAgentNameToVoice(key);
     });
   })();
 </script>
@@ -1121,8 +1127,14 @@
           <option value="anna">Anna (Standard, weiblich)</option>
           <option value="chris">Chris Norddeutscher (männlich)</option>
           <option value="maya">Maya (Supportive, weiblich)</option>
+          <option value="laura">Laura (W&amp;W default, weiblich)</option>
+          <option value="stephan">Stephan (männlich)</option>
+          <option value="helmut">Helmut (männlich)</option>
         </select></div>
-        <p style="font-size:0.6875rem; color:var(--dark-gray); margin-top:0.25rem; line-height:1.3;">Wird beim nächsten Start des Agenten angewendet.</p>
+        <p style="font-size:0.6875rem; color:var(--dark-gray); margin-top:0.25rem; line-height:1.3;">
+          Wird beim nächsten Start des Agenten angewendet.
+          <code id="voice-id-hint-form" style="font-family:monospace; color:#94a3b8;"></code>
+        </p>
       </div>
 
       <button class="btn-primary" id="form-launch-agent-btn" onclick="launchAgentFromForm()">Absenden →</button>
@@ -1480,9 +1492,13 @@
             <option value="anna">Anna (Standard, weiblich) — DEZHhPbmb8LVZmWufkCh</option>
             <option value="chris">Chris Norddeutscher (männlich) — j46AY0iVY3oHcnZbgEJg</option>
             <option value="maya">Maya (Supportive, weiblich) — MGG5Irb57ATHvyIeTEYo</option>
+            <option value="laura">Laura (W&amp;W default, weiblich) — zKHQdbB8oaQ7roNTiDTK</option>
+            <option value="stephan">Stephan (männlich) — IWm8DnJ4NGjFI7QAM5lM</option>
+            <option value="helmut">Helmut (männlich) — Cqbq4nsuUe1we6J45miU</option>
           </select></div>
           <p style="font-size:0.6875rem; color:var(--dark-gray); margin-top:0.25rem; line-height:1.3;">
             Wird beim nächsten Start des Agenten als <code style="font-size:0.6875rem;">override-voice-id</code> gesetzt. Erfordert aktivierten <code style="font-size:0.6875rem;">voice_id</code> Override im Agent-Sicherheits-Tab.
+            Aktive Voice-ID: <code id="voice-id-hint-dv" style="font-family:monospace; color:#94a3b8;"></code>
           </p>
         </div>
       </div>
@@ -1613,9 +1629,12 @@
   var BAUFI24_CONFIG = {
     AGENT_ID: 'agent_8101kmdjapcrf9ttb2jb3q922wq4',
     VOICES: {
-      anna:  { id: 'DEZHhPbmb8LVZmWufkCh', label: 'Anna (Standard, weiblich)' },
-      chris: { id: 'j46AY0iVY3oHcnZbgEJg', label: 'Chris Norddeutscher (männlich)' },
-      maya:  { id: 'MGG5Irb57ATHvyIeTEYo', label: 'Maya (Supportive, weiblich)' }
+      anna:    { id: 'DEZHhPbmb8LVZmWufkCh', label: 'Anna (Standard, weiblich)',                 name: 'Anna' },
+      chris:   { id: 'j46AY0iVY3oHcnZbgEJg', label: 'Chris Norddeutscher (männlich)',            name: 'Chris' },
+      maya:    { id: 'MGG5Irb57ATHvyIeTEYo', label: 'Maya (Supportive, weiblich)',               name: 'Maya' },
+      laura:   { id: 'zKHQdbB8oaQ7roNTiDTK', label: 'Laura (W&W default, weiblich)',             name: 'Laura' },
+      stephan: { id: 'IWm8DnJ4NGjFI7QAM5lM', label: 'Stephan (männlich)',                        name: 'Stephan' },
+      helmut:  { id: 'Cqbq4nsuUe1we6J45miU', label: 'Helmut (männlich)',                         name: 'Helmut' }
     },
     DEFAULT_VOICE: 'anna',
     LANGUAGE: 'de',
@@ -1640,11 +1659,35 @@
     });
     var label = document.getElementById('voice-selector-label');
     if (label) label.textContent = BAUFI24_CONFIG.VOICES[key].label;
+    syncVoiceIdHints(key);
+    syncAgentNameToVoice(key);
+  }
+
+  function syncVoiceIdHints(key) {
+    var voice = BAUFI24_CONFIG.VOICES[key];
+    if (!voice) return;
+    var hintIds = ['voice-id-hint-bar', 'voice-id-hint-form', 'voice-id-hint-dv'];
+    hintIds.forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.textContent = voice.id;
+    });
+  }
+
+  function syncAgentNameToVoice(key) {
+    var voice = BAUFI24_CONFIG.VOICES[key];
+    if (!voice || !voice.name) return;
+    var aiNameEl = document.getElementById('dv-ai_agent_name');
+    if (aiNameEl) aiNameEl.value = voice.name;
   }
 
   function getOverrideVoiceId() {
     var key = getSelectedVoiceKey();
     return BAUFI24_CONFIG.VOICES[key].id;
+  }
+
+  function getCurrentAgentName() {
+    var key = getSelectedVoiceKey();
+    return BAUFI24_CONFIG.VOICES[key].name || 'Mia';
   }
 
   function buildWidgetHTML(agentId, firstMsg, vars) {
@@ -1684,7 +1727,7 @@
     var formMessage = document.getElementById('form-message');
     var vars = {
       brand_name: 'Baufi24',
-      ai_agent_name: 'Mia',
+      ai_agent_name: getCurrentAgentName(),
       name: formName ? formName.value.trim() : '',
       interest_type: (formInterest && formInterest.value) ? formInterest.value : '',
       property: '',
@@ -1719,7 +1762,7 @@
     }
     var vars = {
       brand_name: 'Baufi24',
-      ai_agent_name: 'Mia',
+      ai_agent_name: getCurrentAgentName(),
       name: '',
       interest_type: interest,
       property: (wizAddr && wizAddr.value.trim()) ? wizAddr.value.trim() : '',
