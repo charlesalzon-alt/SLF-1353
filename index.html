@@ -966,8 +966,12 @@
 <script>
   (function() {
     document.addEventListener('DOMContentLoaded', function() {
-      var dd = document.getElementById('voice-selector-dropdown');
-      if (dd) dd.value = getSelectedVoiceKey();
+      var key = getSelectedVoiceKey();
+      var ids = ['voice-selector-dropdown', 'dv-voice', 'form-voice', 'wizard-voice'];
+      ids.forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) el.value = key;
+      });
     });
   })();
 </script>
@@ -1106,6 +1110,19 @@
       <div class="checkbox-group" style="margin-bottom:1.5rem;">
         <input type="checkbox" id="form-newsletter">
         <label for="form-newsletter">Ich möchte per E-Mail über aktuelle Zinsen, Tipps &amp; Angebote informiert werden. Abmeldung jederzeit möglich.</label>
+      </div>
+
+      <div class="form-group" style="background:#f8fafc; padding:0.875rem 1rem; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:1rem;">
+        <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.8125rem;">
+          <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#22c55e;"></span>
+          KI-Stimme zum Testen <span class="optional">(voice_id Override)</span>
+        </label>
+        <div class="select-wrapper"><select id="form-voice" onchange="setSelectedVoiceKey(this.value);">
+          <option value="anna">Anna (Standard, weiblich)</option>
+          <option value="chris">Chris Norddeutscher (männlich)</option>
+          <option value="maya">Maya (Supportive, weiblich)</option>
+        </select></div>
+        <p style="font-size:0.6875rem; color:var(--dark-gray); margin-top:0.25rem; line-height:1.3;">Wird beim nächsten Start des Agenten angewendet.</p>
       </div>
 
       <button class="btn-primary" id="form-launch-agent-btn" onclick="launchAgentFromForm()">Absenden →</button>
@@ -1456,6 +1473,19 @@
         <div class="form-group"><label>KI-Name</label><input type="text" id="dv-ai_agent_name" value="Mia"></div>
         <div class="form-group"><label>Agent ID</label><input type="text" id="dv-agent_id" value="agent_8101kmdjapcrf9ttb2jb3q922wq4" style="font-size:0.75rem;"></div>
       </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Stimme <span class="optional">(voice_id Override)</span></label>
+          <div class="select-wrapper"><select id="dv-voice" onchange="setSelectedVoiceKey(this.value);">
+            <option value="anna">Anna (Standard, weiblich) — DEZHhPbmb8LVZmWufkCh</option>
+            <option value="chris">Chris Norddeutscher (männlich) — j46AY0iVY3oHcnZbgEJg</option>
+            <option value="maya">Maya (Supportive, weiblich) — MGG5Irb57ATHvyIeTEYo</option>
+          </select></div>
+          <p style="font-size:0.6875rem; color:var(--dark-gray); margin-top:0.25rem; line-height:1.3;">
+            Wird beim nächsten Start des Agenten als <code style="font-size:0.6875rem;">override-voice-id</code> gesetzt. Erfordert aktivierten <code style="font-size:0.6875rem;">voice_id</code> Override im Agent-Sicherheits-Tab.
+          </p>
+        </div>
+      </div>
     </div>
 
     <button class="btn-primary" onclick="launchAgent()" id="launch-agent-btn" style="width:100%; margin-bottom:0.5rem; background:var(--dark-blue); color:var(--white);">
@@ -1603,6 +1633,11 @@
   function setSelectedVoiceKey(key) {
     if (!BAUFI24_CONFIG.VOICES[key]) return;
     try { localStorage.setItem('baufi24-voice', key); } catch (e) {}
+    var ids = ['voice-selector-dropdown', 'dv-voice', 'form-voice', 'wizard-voice'];
+    ids.forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el && el.value !== key) el.value = key;
+    });
     var label = document.getElementById('voice-selector-label');
     if (label) label.textContent = BAUFI24_CONFIG.VOICES[key].label;
   }
